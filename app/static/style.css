@@ -4,10 +4,12 @@ body {
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: rgb(222, 222, 222);
 }
 .menu {
     width: 10%;
-    background-color: #ff6f61;
+    background-color: #292929;
     padding: 10px;
     box-sizing: border-box;
     margin: 10px;
@@ -17,7 +19,7 @@ body {
 }
 .sidebar {
     width: 28%;
-    background-color: #61a8ff;
+    background-color: #292929;
     padding: 10px;
     box-sizing: border-box;
     margin: 10px;
@@ -53,7 +55,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
-    background-color: #ff6f61;
+    background-color: #292929;
     border: 0;
     border-radius: 13px;
     box-shadow: 0.01em 0.01em 4px rgba(66, 66, 66, 0.408);
@@ -63,8 +65,8 @@ body {
     max-height: 100%;
 }
 .image-details {
-    background-color: #ff6f61;
-    color: #fff;
+    background-color: #292929;
+    height: 30%;
     padding: 10px;
     border: 0;
     border-radius: 13px;
