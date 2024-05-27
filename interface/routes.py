@@ -1,4 +1,4 @@
-from app import app
+from interface import app
 from flask import render_template, send_file, request
 
 @app.route('/')

@@ -15,7 +15,7 @@ body {
     margin: 10px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.01em 0.01em 4px rgba(66, 66, 66, 0.408);
+    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
 .sidebar {
     width: 28%;
@@ -26,7 +26,7 @@ body {
     margin-left: 0px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.01em 0.01em 4px rgba(66, 66, 66, 0.408);
+    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
 .thumbnail-container {
     display: flex;
@@ -58,7 +58,7 @@ body {
     background-color: #292929;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.01em 0.01em 4px rgba(66, 66, 66, 0.408);
+    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
 .image-viewer img {
     max-width: 100%;
@@ -70,5 +70,5 @@ body {
     padding: 10px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.01em 0.01em 4px rgba(66, 66, 66, 0.408);
-}
+    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
+} 
