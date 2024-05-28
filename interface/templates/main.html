@@ -15,7 +15,11 @@
 <div class="main-content">
     <div class="image-viewer">
         <div class="image-viewer-inside">
-            <img src="{{ url_for('uploaded_file', filename=images[0]) if images else 'static/placeholder.png' }}" alt="Main Image">
+            {% if images %}
+            <img src="{{ url_for('uploaded_file', filename=images[0]) }}" alt="Main Image">
+            {% else %}
+            <div class="placeholder-text">Изображение для просмотра не выбрано :(</div>
+            {% endif %}
         </div>
     </div>
     <div class="image-details">
@@ -25,5 +29,3 @@
         <button id="reset-image-btn" class="default-btn">Сбросить положение</button>
     </div>
 </div>
-
-

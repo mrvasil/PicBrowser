@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     const thumbnails = document.querySelectorAll('.thumbnail img');
-    const mainImageViewer = document.querySelector('.image-viewer img');
+    const mainImageViewer = document.querySelector('.image-viewer-inside');
     const deleteButton = document.getElementById('delete-image-btn');
 
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
             thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
             this.parentElement.classList.add('selected');
-            mainImageViewer.src = this.src; 
-            mainImageViewer.dataset.filename = this.dataset.filename;
+            mainImageViewer.innerHTML = `<img src="${this.src}" data-filename="${this.dataset.filename}" alt="Main Image">`;
         });
     });
 
     deleteButton.addEventListener('click', function() {
-        const filename = mainImageViewer.dataset.filename;
+        const mainImage = mainImageViewer.querySelector('img');
+        const filename = mainImage ? mainImage.dataset.filename : null;
         if (filename) {
             deleteImage(filename);
         } else {
@@ -21,8 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-
 
 document.addEventListener("DOMContentLoaded", function() {
 const imageContainer = document.querySelector('.image-viewer-inside');
@@ -60,6 +58,18 @@ imageContainer.addEventListener('wheel', function(e) {
     }
 });
 function updateTransform() {
+    image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+    const originalWidth = image.naturalWidth;
+    const originalHeight = image.naturalHeight;
+    const scaledWidth = originalWidth * scale;
+    const scaledHeight = originalHeight * scale;
+    
+    if (scaledWidth < originalWidth || scaledHeight < originalHeight) {
+        // Reset the scale to 1 if trying to scale below the original size
+        scale = 1;
+    }
+
     image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
 }
 
@@ -120,7 +130,6 @@ function resetTransform() {
 }
 
 });
-
 
 function deleteImage(filename) {
     if (filename) {
