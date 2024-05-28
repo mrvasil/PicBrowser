@@ -1,4 +1,10 @@
-<link rel="stylesheet" href="static/style.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css">
+    <script src="static/script.js"></script>
+</head>
+
 <div class="sidebar">
     <div class="thumbnail-container">
         {% for image in images %}
@@ -13,20 +19,8 @@
         </div>
     </div>
     <div class="image-details">
-        <p>Image Info</p>
+        <p style="margin-left: 20px;">Image Info</p>
     </div>
 </div>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const thumbnails = document.querySelectorAll('.thumbnail img');
-    const mainImageViewer = document.querySelector('.image-viewer img');
-
-    thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function() {
-            mainImageViewer.src = this.src; // Обновляет источник изображения в image-viewer
-        });
-    });
-});
-</script>

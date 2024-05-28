@@ -1,0 +1,92 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const thumbnails = document.querySelectorAll('.thumbnail img');
+    const mainImageViewer = document.querySelector('.image-viewer img');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            mainImageViewer.src = this.src; // Обновляет источник изображения в image-viewer
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function() {
+const imageContainer = document.querySelector('.image-viewer-inside');
+const image = imageContainer.querySelector('img');
+let isDragging = false;
+let originX, originY;
+let translateX = 0, translateY = 0;
+let scale = 1;
+imageContainer.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    originX = e.clientX;
+    originY = e.clientY;
+    e.preventDefault();
+});
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+});
+document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+        translateX += e.clientX - originX;
+        translateY += e.clientY - originY;
+        originX = e.clientX;
+        originY = e.clientY;
+        updateTransform();
+    }
+});
+imageContainer.addEventListener('wheel', function(e) {
+    if (e.ctrlKey) {
+        e.preventDefault();
+        scale += e.deltaY * -0.01;
+        scale = Math.min(Math.max(.125, scale), 4);
+        updateTransform();
+    }
+});
+function updateTransform() {
+    image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+}
+// Добавление поддержки тач-событий для мобильных устройств
+imageContainer.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+        isDragging = true;
+        originX = e.touches[0].clientX;
+        originY = e.touches[0].clientY;
+    }
+});
+imageContainer.addEventListener('touchend', function() {
+    isDragging = false;
+});
+imageContainer.addEventListener('touchmove', function(e) {
+    if (isDragging && e.touches.length === 1) {
+        translateX += e.touches[0].clientX - originX;
+        translateY += e.touches[0].clientY - originY;
+        originX = e.touches[0].clientX;
+        originY = e.touches[0].clientY;
+        updateTransform();
+    }
+});
+// Обработка жестов pinch-to-zoom
+let initialDistance = null;
+imageContainer.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const dist = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY
+        );
+        if (initialDistance) {
+            let deltaScale = dist / initialDistance;
+            scale *= deltaScale;
+            updateTransform();
+        }
+        initialDistance = dist;
+    }
+});
+imageContainer.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+        initialDistance = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY
+        );
+    }
+});
+});
