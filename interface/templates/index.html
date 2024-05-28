@@ -11,17 +11,13 @@
         <button class="menu-item" onclick="loadPage('upload')">Upload</button>
     </div>
     <div id="content">
-        <!-- Content will be loaded here -->
+        <iframe id="contentFrame" style="width:100%; height:100vh; border:none;"></iframe>
     </div>
 
     <script>
         function loadPage(pageUrl) {
-            fetch(pageUrl)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('content').innerHTML = data;
-                })
-                .catch(error => console.error('Ошибка загрузки страницы:', error));
+            var iframe = document.getElementById('contentFrame');
+            iframe.src = pageUrl;
         }
 
         window.onload = function() {

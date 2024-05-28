@@ -1,5 +1,14 @@
-<center>
-    <div>
-        Upload page
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style_for_upload.css">
+    <script src="static/script_for_upload.js"></script>
+</head>
+
+    <div class="upload-container">
+        <div class="drag-drop-area" id="drag-drop-area">
+            Перетащите файлы сюда
+        </div>
+        <button class="upload-button" onclick="uploadFolder()">Загрузить папку</button>
+        <button class="upload-button" onclick="uploadZip()">Загрузить ZIP</button>
     </div>
-</center>
