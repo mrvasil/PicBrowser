@@ -1,12 +1,17 @@
-body {
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
+html, body {
+    height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #121212;
     color: rgb(222, 222, 222);
 }
+
+body {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
 .menu {
     width: 192px;
     background-color: #292929;
@@ -17,8 +22,16 @@ body {
     border-radius: 13px;
     box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
+
+#content {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    height: 100%;
+}
+
 .sidebar {
-    width: 28%;
+    flex: 1; /* Занимает все оставшееся пространство */
     background-color: #292929;
     padding: 10px;
     box-sizing: border-box;
@@ -28,29 +41,18 @@ body {
     border-radius: 13px;
     box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
-.thumbnail-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.thumbnail {
-    width: calc(33.33% - 10px);
-    cursor: pointer;
-}
-.thumbnail img {
-    width: 100%;
-    height: auto;
-}
+
 .main-content {
-    width: 60%;
+    flex: 2; /* Занимает удвоенное оставшееся пространство */
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     margin: 10px;
     margin-left: 0px;
 }
+
 .image-viewer {
-    flex: 1;
+    flex: 1; /* Занимает все оставшееся пространство */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,15 +62,17 @@ body {
     border-radius: 13px;
     box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
 }
+
 .image-viewer img {
     max-width: 100%;
     max-height: 100%;
 }
+
 .image-details {
+    flex: 1; /* Занимает все оставшееся пространство */
     background-color: #292929;
-    height: 30%;
     padding: 10px;
     border: 0;
     border-radius: 13px;
     box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
-} 
+}
