@@ -1,14 +1,32 @@
 <link rel="stylesheet" href="static/style.css">
 <div class="sidebar">
     <div class="thumbnail-container">
-        <div class="thumbnail"><img src="randomcode/image1.jpg"></div>
+        {% for image in images %}
+            <div class="thumbnail"><img src="{{ url_for('uploaded_file', filename=image) }}"></div>
+        {% endfor %}
     </div>
 </div>
 <div class="main-content">
     <div class="image-viewer">
-        <img src="randomcode/image1.jpg" alt="Main Image">
+        <div class="image-viewer-inside">
+            <img src="{{ url_for('uploaded_file', filename=images[0]) if images else 'static/placeholder.png' }}" alt="Main Image">
+        </div>
     </div>
     <div class="image-details">
         <p>Image Info</p>
     </div>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const thumbnails = document.querySelectorAll('.thumbnail img');
+    const mainImageViewer = document.querySelector('.image-viewer img');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            mainImageViewer.src = this.src; // Обновляет источник изображения в image-viewer
+        });
+    });
+});
+</script>

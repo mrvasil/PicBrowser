@@ -1,6 +1,6 @@
 from interface import app
 from functions import allowed_file, get_user_code
-from flask import render_template, send_file, request, jsonify, make_response
+from flask import render_template, send_file, request, jsonify, make_response, send_file
 from werkzeug.utils import secure_filename
 import zipfile
 import os
@@ -13,12 +13,22 @@ def index():
 
 @app.route('/main')
 def page1():
-    return render_template("main.html")
+    user_code = get_user_code(request)
+    user_folder = os.path.join('uploads', user_code)
+    image_files = [f for f in os.listdir(user_folder) if f.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+    image_paths = [os.path.join(user_code, file) for file in image_files]
+    print(image_paths)
+    return render_template("main.html", images=image_paths)
+
 
 @app.route('/upload')
 def page2():
     return render_template("upload.html")
 
+
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_file(os.path.join('../uploads', filename))
 
 
 
