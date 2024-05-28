@@ -112,7 +112,7 @@ body {
     max-width: 95%;
     max-height: 95%;
     object-fit: cover;
-    
+    cursor: grab;
 }
 
 
@@ -154,6 +154,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     margin-left: 20px;
+    font-family: 'SFProText';
 }
 .default-btn:hover {
     background-color: #484848;
