@@ -4,7 +4,6 @@ from flask import render_template, send_file, request, jsonify, make_response, s
 from werkzeug.utils import secure_filename
 import zipfile
 import os
-import uuid
 import shutil
 
 @app.route('/')
@@ -17,7 +16,6 @@ def page1():
     user_folder = os.path.join('uploads', user_code)
     image_files = [f for f in os.listdir(user_folder) if f.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
     image_paths = [os.path.join(user_code, file) for file in image_files]
-    print(image_paths)
     return render_template("main.html", images=image_paths)
 
 
@@ -138,3 +136,15 @@ def upload_file():
 
     response.set_cookie('user_code', user_code, max_age=31536000)
     return response, 200
+
+
+@app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
+def delete_image(usercode, filename):
+    user_code = get_user_code(request)
+    file_path = os.path.join('uploads', user_code, filename)
+    try:
+        os.remove(file_path)
+        return jsonify("Success"), 200
+    except Exception as e:
+        return jsonify("Error"), 500
+    

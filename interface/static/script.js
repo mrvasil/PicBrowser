@@ -1,13 +1,27 @@
 document.addEventListener("DOMContentLoaded", function() {
     const thumbnails = document.querySelectorAll('.thumbnail img');
     const mainImageViewer = document.querySelector('.image-viewer img');
+    const deleteButton = document.getElementById('delete-image-btn');
 
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
-            mainImageViewer.src = this.src; // Обновляет источник изображения в image-viewer
+            mainImageViewer.src = this.src; 
+            mainImageViewer.dataset.filename = this.dataset.filename;
         });
     });
+
+    deleteButton.addEventListener('click', function() {
+        const filename = mainImageViewer.dataset.filename;
+        if (filename) {
+            deleteImage(filename);
+        } else {
+            alert('No image selected for deletion.');
+        }
+    });
 });
+
+
+
 document.addEventListener("DOMContentLoaded", function() {
 const imageContainer = document.querySelector('.image-viewer-inside');
 const image = imageContainer.querySelector('img');
@@ -44,7 +58,7 @@ imageContainer.addEventListener('wheel', function(e) {
 function updateTransform() {
     image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
 }
-// Добавление поддержки тач-событий для мобильных устройств
+
 imageContainer.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
         isDragging = true;
@@ -90,3 +104,19 @@ imageContainer.addEventListener('touchstart', function(e) {
     }
 });
 });
+
+
+function deleteImage(filename) {
+    if (filename) {
+        fetch(`/delete_image/${filename}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data == "Success") {
+                    window.location.reload();
+                } else {
+                    alert('Error deleting image');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}

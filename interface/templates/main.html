@@ -8,7 +8,7 @@
 <div class="sidebar">
     <div class="thumbnail-container">
         {% for image in images %}
-            <div class="thumbnail"><img src="{{ url_for('uploaded_file', filename=image) }}"></div>
+        <div class="thumbnail"><img src="{{ url_for('uploaded_file', filename=image) }}" data-filename="{{ image }}"></div>
         {% endfor %}
     </div>
 </div>
@@ -20,6 +20,7 @@
     </div>
     <div class="image-details">
         <p style="margin-left: 20px;">Image Info</p>
+        <button id="delete-image-btn" style="margin-left: 20px;">Delete Image</button>
     </div>
 </div>
 
