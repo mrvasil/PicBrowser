@@ -7,11 +7,11 @@
 </head>
 <body>
     <div class="menu">
-        <button onclick="loadPage('page1')">Page 1</button>
-        <button onclick="loadPage('page2')">Page 2</button>
+        <button class="menu-item" onclick="loadPage('main')">Main</button>
+        <button class="menu-item" onclick="loadPage('upload')">Upload</button>
     </div>
     <div id="content">
-        <!-- Содержимое страницы будет загружаться сюда -->
+        <!-- Content will be loaded here -->
     </div>
 
     <script>
@@ -24,10 +24,9 @@
                 .catch(error => console.error('Ошибка загрузки страницы:', error));
         }
 
-        // Загрузка страницы по умолчанию при загрузке страницы
         window.onload = function() {
-            loadPage('page1');
-    };
+            loadPage('main');
+        };
     </script>
 </body>
 </html>

@@ -5,10 +5,10 @@ from flask import render_template, send_file, request
 def index():
     return render_template("index.html")
 
-@app.route('/page1')
+@app.route('/main')
 def page1():
-    return render_template("page1.html")
+    return render_template("main.html")
 
-@app.route('/page2')
+@app.route('/upload')
 def page2():
-    return render_template("page2.html")
+    return render_template("upload.html")
