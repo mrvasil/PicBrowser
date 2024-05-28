@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'SFProText';
+    src: url('/static/SFProText-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+    font-family: 'SFProText', Arial, sans-serif;
+}
 .upload-container {
     display: flex;
     flex-direction: column;
@@ -9,20 +18,23 @@
 }
 
 .drag-drop-area {
-    width: 80%;
-    max-width: 600px;
+    width: 70%;
+    max-width: 500px;
     height: 200px;
     border: 2px dashed #555;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     transition: background-color 0.3s;
 }
 
 .drag-drop-area.drag-over {
-    background-color: #333;
+    background-color: #3c3c3c;
+}
+.drag-drop-area:hover {
+    background-color: #333; /* Цвет фона при наведении */
 }
 
 .upload-button {
@@ -30,7 +42,7 @@
     color: rgb(222, 222, 222);
     border: none;
     padding: 10px 20px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -39,4 +51,12 @@
 
 .upload-button:hover {
     background-color: #3a3a3a;
+}
+
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
 }
