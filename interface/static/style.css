@@ -136,8 +136,12 @@ body {
     height: 60px;
     object-fit: cover;
     border: 0;
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0.02em 0.02em 15px rgba(0, 0, 0, 0.608);
+}
+
+.thumbnail.selected img {
+    box-shadow: 0.02em 0.02em 20px rgb(255, 255, 255);
 }
 
 #delete-image-btn {

@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
+            thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
+            this.parentElement.classList.add('selected');
             mainImageViewer.src = this.src; 
             mainImageViewer.dataset.filename = this.dataset.filename;
         });
