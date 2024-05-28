@@ -144,7 +144,7 @@ body {
     box-shadow: 0.02em 0.02em 20px rgb(255, 255, 255);
 }
 
-#delete-image-btn {
+.default-btn {
     background-color: #3a3a3a;
     color: rgb(222, 222, 222);
     border: none;
@@ -153,7 +153,8 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-left: 20px;
 }
-#delete-image-btn:hover {
+.default-btn:hover {
     background-color: #484848;
 }

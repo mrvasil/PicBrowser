@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", function() {
 const imageContainer = document.querySelector('.image-viewer-inside');
 const image = imageContainer.querySelector('img');
+const resetButton = document.getElementById('reset-image-btn');
+
 let isDragging = false;
 let originX, originY;
 let translateX = 0, translateY = 0;
@@ -105,6 +107,18 @@ imageContainer.addEventListener('touchstart', function(e) {
         );
     }
 });
+
+resetButton.addEventListener('click', function() { // Обработчик событий для сброса
+    resetTransform();
+});
+
+function resetTransform() {
+    translateX = 0;
+    translateY = 0;
+    scale = 1;
+    updateTransform();
+}
+
 });
 
 
