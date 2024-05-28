@@ -50,3 +50,66 @@ function uploadZip() {
 }
 
 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    let dropArea = document.getElementById('drag-drop-area');
+    let fileInput = document.getElementById('file-input');
+
+    dropArea.addEventListener('click', function() {
+        fileInput.click(); // Активирует скрытый input при клике на область drag&drop
+    });
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+    });
+
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        let dt = e.dataTransfer;
+        let files = dt.files;
+        uploadFiles(files); // Функция для загрузки файлов
+    }
+    
+    function uploadFiles(files) {
+        let formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files[]', files[i]);
+        }
+    
+        fetch('/upload_file', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+          .then(data => alert('Files uploaded: ' + data))
+          .catch(error => alert('Error uploading files: ' + error));
+    }
+});
+
+function handleFiles(files) {
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files[]', files[i]);
+    }
+
+    fetch('/upload_file', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.text())
+      .then(data => alert('Files uploaded: ' + data))
+      .catch(error => alert('Error uploading files: ' + error));
+}

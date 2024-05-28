@@ -27,7 +27,7 @@ body {
     margin: 10px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
+    box-shadow: 0.01em 0.01em 10px rgba(57, 57, 57, 0.494);
     display: flex;
     flex-direction: column;
 }
@@ -68,7 +68,7 @@ body {
     margin-left: 0px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
+    box-shadow: 0.01em 0.01em 10px rgba(57, 57, 57, 0.494);
 }
 
 .main-content {
@@ -89,7 +89,7 @@ body {
     background-color: #292929;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
+    box-shadow: 0.01em 0.01em 10px rgba(57, 57, 57, 0.494);
 }
 
 .image-viewer img {
@@ -103,5 +103,5 @@ body {
     padding: 10px;
     border: 0;
     border-radius: 13px;
-    box-shadow: 0.02em 0.02em 7px rgba(97, 97, 97, 0.408);
+    box-shadow: 0.01em 0.01em 10px rgba(57, 57, 57, 0.494);
 }

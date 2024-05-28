@@ -6,9 +6,11 @@
 </head>
 <div class="upload-container">
     <div class="drag-drop-area" id="drag-drop-area">
-        Перетащите файлы сюда
+        Перетащите файлы сюда или 
+        <span class="clickable"></span>
+        <input type="file" id="file-input" multiple style="display: none;" onchange="handleFiles(this.files)">
     </div>
-    <div class="button-container"> <!-- Новый контейнер для кнопок -->
+    <div class="button-container">
         <button class="upload-button" onclick="uploadFolder()">Загрузить папку</button>
         <button class="upload-button" onclick="uploadZip()">Загрузить ZIP</button>
     </div>

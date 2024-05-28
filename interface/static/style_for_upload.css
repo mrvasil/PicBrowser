@@ -19,6 +19,7 @@ body {
 
 .drag-drop-area {
     width: 70%;
+    cursor: pointer;
     max-width: 500px;
     height: 200px;
     border: 2px dashed #555;
