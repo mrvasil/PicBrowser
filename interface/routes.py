@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import zipfile
 import os
 import uuid
+import shutil
 
 @app.route('/')
 def index():
@@ -19,6 +20,10 @@ def page2():
     return render_template("upload.html")
 
 
+
+
+
+
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
     user_code = get_user_code(request)
@@ -28,20 +33,27 @@ def upload_folder():
         return "No files part", 400
 
     files = request.files.getlist('files[]')
+    if len(files) > 500:
+        return "The number of files should not exceed 500", 400
+
     user_folder = os.path.join('uploads', user_code)
 
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
 
     for file in files:
-        if file.filename == '':
-            return "No selected file", 400
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(user_folder, filename))
+        if file.filename == '' or not file.content_type.startswith('image/') or file.content_length > 50000000:
+            continue
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(user_folder, filename))
 
     response.set_cookie('user_code', user_code, max_age=31536000)
     return response, 200
+
+
+
+
+
 
 
 @app.route('/upload_zip', methods=['POST'])
@@ -56,6 +68,8 @@ def upload_zip():
 
     if file.filename == '':
         return "No selected file", 400
+    if file.content_length > 300000000:  # 300 MB
+        return "ZIP file size should not exceed 300 MB", 400
 
     user_folder = os.path.join('uploads', user_code)
 
@@ -70,14 +84,22 @@ def upload_zip():
         try:
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
                 zip_ref.extractall(user_folder)
-        except zipfile.BadZipFile:
+            for root, dirs, files in os.walk(user_folder, topdown=False):
+                for name in files:
+                    if not name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                        os.remove(os.path.join(root, name))
+                for name in dirs:
+                    shutil.rmtree(os.path.join(root, name))
+        except:
             return "Failed to unzip file", 400
 
-        os.remove(file_path)
         response.set_cookie('user_code', user_code, max_age=31536000)
         return response, 200
 
     return "Invalid file type", 400
+
+
+
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
@@ -96,6 +118,10 @@ def upload_file():
     for file in files:
         if file.filename == '':
             return "No selected file", 400
+        if not file.content_type.startswith('image/'):
+            return "Only image files are allowed", 400
+        if file.content_length > 50000000:
+            return "File size should not exceed 50 MB", 400
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))

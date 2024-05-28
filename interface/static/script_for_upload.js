@@ -1,12 +1,23 @@
 function uploadFolder() {
-    // Получаем выбранный файл/папку
     let input = document.createElement('input');
     input.type = 'file';
     input.webkitdirectory = true;
     input.onchange = e => {
         let files = e.target.files;
+        if (files.length > 500) {
+            alert('The number of files should not exceed 500');
+            return;
+        }
         let formData = new FormData();
         for (let i = 0; i < files.length; i++) {
+            if (!files[i].type.startsWith('image/')) {
+                alert('Only image files are allowed!');
+                continue;
+            }
+            if (files[i].size > 50000000) { 
+                alert('File size should not exceed 50 MB');
+                continue;
+            }
             formData.append('files[]', files[i]);
         }
 
@@ -31,10 +42,13 @@ function uploadZip() {
     input.accept = '.zip';
     input.onchange = e => {
         let file = e.target.files[0];
+        if (file.size > 300000000) {
+            alert('ZIP file size should not exceed 300 MB');
+            return;
+        }
         let formData = new FormData();
         formData.append('file', file);
 
-        // Отправляем файл на сервер
         fetch('/upload_zip', {
             method: 'POST',
             body: formData
@@ -51,13 +65,12 @@ function uploadZip() {
 
 
 
-
 document.addEventListener('DOMContentLoaded', function() {
     let dropArea = document.getElementById('drag-drop-area');
     let fileInput = document.getElementById('file-input');
 
     dropArea.addEventListener('click', function() {
-        fileInput.click(); // Активирует скрытый input при клике на область drag&drop
+        fileInput.click();
     });
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -82,15 +95,49 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDrop(e) {
         let dt = e.dataTransfer;
         let files = dt.files;
-        uploadFiles(files); // Функция для загрузки файлов
+        uploadFiles(files);
     }
     
     function uploadFiles(files) {
         let formData = new FormData();
         for (let i = 0; i < files.length; i++) {
+            if (!files[i].type.startsWith('image/')) {
+                alert('Only image files are allowed!');
+                continue;
+            }
+            if (files[i].size > 50000000) {
+                alert('File size should not exceed 50MB');
+                continue;
+            }
             formData.append('files[]', files[i]);
         }
     
+        if (formData.has('files[]')) {
+            fetch('/upload_file', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+              .then(data => alert('Files uploaded: ' + data))
+              .catch(error => alert('Error uploading files: ' + error));
+        }
+    }
+});
+
+function handleFiles(files) {
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        if (!files[i].type.startsWith('image/')) {
+            alert('Only image files are allowed!');
+            continue;
+        }
+        if (files[i].size > 50000000) {
+            alert('File size should not exceed 50 MB');
+            continue;
+        }
+        formData.append('files[]', files[i]);
+    }
+
+    if (formData.has('files[]')) {
         fetch('/upload_file', {
             method: 'POST',
             body: formData
@@ -98,18 +145,4 @@ document.addEventListener('DOMContentLoaded', function() {
           .then(data => alert('Files uploaded: ' + data))
           .catch(error => alert('Error uploading files: ' + error));
     }
-});
-
-function handleFiles(files) {
-    let formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-        formData.append('files[]', files[i]);
-    }
-
-    fetch('/upload_file', {
-        method: 'POST',
-        body: formData
-    }).then(response => response.text())
-      .then(data => alert('Files uploaded: ' + data))
-      .catch(error => alert('Error uploading files: ' + error));
 }
