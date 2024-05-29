@@ -1,5 +1,5 @@
 from interface import app
-from functions import allowed_file, get_user_code
+import functions
 from flask import render_template, send_file, request, jsonify, make_response, send_file
 from werkzeug.utils import secure_filename
 import zipfile
@@ -12,7 +12,7 @@ def index():
 
 @app.route('/main')
 def page1():
-    user_code = get_user_code(request)
+    user_code = functions.get_user_code(request)
     user_folder = os.path.join('uploads', user_code)
     image_files = [f for f in os.listdir(user_folder) if f.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
     image_paths = [os.path.join(user_code, file) for file in image_files]
@@ -34,7 +34,7 @@ def uploaded_file(filename):
 
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
-    user_code = get_user_code(request)
+    user_code = functions.get_user_code(request)
     response = make_response("Files uploaded successfully")
 
     if 'files[]' not in request.files:
@@ -66,7 +66,7 @@ def upload_folder():
 
 @app.route('/upload_zip', methods=['POST'])
 def upload_zip():
-    user_code = get_user_code(request)
+    user_code = functions.get_user_code(request)
     response = make_response("ZIP file uploaded successfully")
 
     if 'file' not in request.files:
@@ -84,7 +84,7 @@ def upload_zip():
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
 
-    if file and allowed_file(file.filename):
+    if file and functions.allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_path = os.path.join(user_folder, filename)
         file.save(file_path)
@@ -111,7 +111,7 @@ def upload_zip():
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    user_code = get_user_code(request)
+    user_code = functions.get_user_code(request)
     response = make_response("Files uploaded successfully")
 
     if 'files[]' not in request.files:
@@ -140,11 +140,18 @@ def upload_file():
 
 @app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
 def delete_image(usercode, filename):
-    user_code = get_user_code(request)
+    user_code = functions.get_user_code(request)
     file_path = os.path.join('uploads', user_code, filename)
     try:
         os.remove(file_path)
         return jsonify("Success"), 200
     except Exception as e:
         return jsonify("Error"), 500
-    
+
+
+@app.route('/get_metadata/<user_code>/<filename>')
+def metadata(user_code, filename):
+    img_path = os.path.join('uploads', user_code, filename)
+    metadata = functions.get_metadata(img_path)
+    return metadata
+

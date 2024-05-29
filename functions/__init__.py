@@ -1,5 +1,14 @@
 import uuid
 import os
+import exiftool
+
+def get_metadata(image_path):
+    with exiftool.ExifToolHelper() as et:
+        metadata = ""
+        data=et.get_metadata(image_path)[0]
+        for d in data:
+            metadata += d+":"+str(data[d])+"\n"
+    return metadata
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'zip'}

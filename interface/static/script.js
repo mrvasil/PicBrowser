@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const thumbnails = document.querySelectorAll('.thumbnail img');
     const mainImageViewer = document.querySelector('.image-viewer img');
     const deleteButton = document.getElementById('delete-image-btn');
+    const filenameDisplay = document.querySelector('.image-details p');
 
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
@@ -9,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function() {
             this.parentElement.classList.add('selected');
             mainImageViewer.src = this.src; 
             mainImageViewer.dataset.filename = this.dataset.filename;
+            filenameDisplay.textContent = this.dataset.filename.split('\\').pop();
+            filenameDisplay.textContent = this.dataset.filename.split('/').pop();
         });
     });
 
@@ -121,6 +124,14 @@ function resetTransform() {
 
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/get_metadata/' + document.querySelector('.thumbnail img').dataset.filename)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('metadata').textContent = data;
+        })
+        .catch(error => console.error('Error:', error));
+});
 
 function deleteImage(filename) {
     if (filename) {
