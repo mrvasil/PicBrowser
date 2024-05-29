@@ -45,6 +45,8 @@ body {
     transition: background-color 0.3s;
     font-size: 110%;
     font-family: 'SFProText';
+    margin-bottom: 5px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.204);
 }
 
 .menu-item:hover {
@@ -95,15 +97,15 @@ body {
 }
 
 .image-viewer-inside {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #121212;
     border-radius: 10px; 
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.843);
-    overflow: hidden;
+    overflow: hidden
 }
 
 .image-viewer img {
@@ -156,10 +158,4 @@ body {
 }
 .default-btn:hover {
     background-color: #484848;
-}
-.placeholder-text {
-    color: #ccc;
-    font-size: 1.5em;
-    text-align: center;
-    width: 100%;
 }

@@ -29,8 +29,6 @@ function uploadFolder() {
             return response.text();
         }).then(data => {
             alert('Папка загружена: ' + data);
-            var iframe = parent.document.getElementById('contentFrame');
-            iframe.src = 'main';
         }).catch(error => {
             alert('Ошибка загрузки: ' + error);
         });
@@ -58,14 +56,14 @@ function uploadZip() {
             return response.text();
         }).then(data => {
             alert('ZIP загружен: ' + data);
-            var iframe = parent.document.getElementById('contentFrame');
-            iframe.src = 'main';
         }).catch(error => {
             alert('Ошибка загрузки: ' + error);
         });
     };
     input.click();
 }
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
     let dropArea = document.getElementById('drag-drop-area');
@@ -144,11 +142,7 @@ function handleFiles(files) {
             method: 'POST',
             body: formData
         }).then(response => response.text())
-          .then(data => {
-              alert('Files uploaded: ' + data);
-              var iframe = parent.document.getElementById('contentFrame');
-              iframe.src = 'main';
-          })
+          .then(data => alert('Files uploaded: ' + data))
           .catch(error => alert('Error uploading files: ' + error));
     }
 }
