@@ -126,9 +126,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function fetchMetadata(filename) {
         fetch('/get_metadata/' + filename)
-            .then(response => response.text())
+            .then(response => response.json())
             .then(data => {
-                document.getElementById('metadata').textContent = data;
+                let metadataHtml = '';
+                for (const key in data) {
+                    metadataHtml += `<b>${key}:</b> ${data[key]} <br>`;
+                }
+                document.getElementById('metadata').innerHTML = metadataHtml;
             })
             .catch(error => console.error('Error fetching metadata:', error));
     }

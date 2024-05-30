@@ -8,12 +8,21 @@ def get_metadata(image_path):
     try:
         with exiftool.ExifTool() as et:
             metadata = et.execute_json('-G', '-j', image_path)
-            specific_data = "\n".join([
-                f"Model: {metadata[0].get('EXIF:Model', 'N/A')}",
-                f"ExposureTime: {metadata[0].get('EXIF:ExposureTime', 'N/A')}",
-                f"FNumber: {metadata[0].get('EXIF:FNumber', 'N/A')}",
-                f"ISO: {metadata[0].get('EXIF:ISO', 'N/A')}"
-            ])
+
+            specific_data={}
+
+            file_size_bytes = metadata[0].get('File:FileSize', '-')
+
+            if file_size_bytes != '-':
+                file_size_megabytes = int(file_size_bytes) / (1024 * 1024)
+                specific_data["Размер файла"] = f"{file_size_megabytes:.1f} MB"
+            else:
+                specific_data["Размер файла"] = '-'
+
+            specific_data["Тип файла"] = metadata[0].get('File:FileType', '-')
+            specific_data["Разрешение"] = str(metadata[0].get('File:ImageWidth', '-')) + "x" + str(metadata[0].get('File:ImageHeight', '-'))
+            specific_data["Мегапиксели"] = int(metadata[0].get('Composite:Megapixels', '-'))
+            
     except Exception as e:
         specific_data = f"ExifTool error: {str(e)}"
     return specific_data
