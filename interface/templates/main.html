@@ -8,7 +8,7 @@
 <div class="sidebar">
     <div class="thumbnail-container">
         {% for image in images %}
-        <div class="thumbnail"><img src="{{ url_for('uploaded_file', filename=image) }}" data-filename="{{ image }}"></div>
+        <div class="thumbnail" draggable="true"><img src="{{ url_for('uploaded_file', filename=image) }}" data-filename="{{ image }}"></div>
         {% endfor %}
     </div>
 </div>

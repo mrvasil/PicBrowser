@@ -155,3 +155,17 @@ def metadata(user_code, filename):
     metadata = functions.get_metadata(img_path)
     return metadata
 
+
+
+
+@app.route('/image_number', methods=['POST'])
+def update_image_position():
+    data = request.get_json()
+    new_index = int(data.get('number'))+1
+    filename = data.get('filename')
+    user_code = functions.get_user_code(request)
+    user_folder = os.path.join('uploads', user_code)
+
+    print(new_index, filename)
+    return "ok"
+    

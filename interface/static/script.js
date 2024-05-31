@@ -152,3 +152,76 @@ function deleteImage(filename) {
             .catch(error => console.error('Error:', error));
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    let draggedItem = null;
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('dragstart', function(e) {
+            draggedItem = thumbnail;
+            setTimeout(() => thumbnail.classList.add('dragging'), 0);
+        });
+
+        thumbnail.addEventListener('dragend', function(e) {
+            setTimeout(() => thumbnail.classList.remove('dragging'), 0);
+            updateImagePosition(draggedItem);
+        });
+    });
+
+    const container = document.querySelector('.thumbnail-container');
+    container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(container, e.clientY);
+        if (afterElement == null) {
+            container.appendChild(draggedItem);
+        } else {
+            container.insertBefore(draggedItem, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, x, y) {
+        const draggableElements = [...container.querySelectorAll('.thumbnail:not(.dragging)')];
+    
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offsetX = x - box.left - box.width / 2;
+            const offsetY = y - box.top - box.height / 2;
+            const offsetDist = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+    
+            if (offsetDist < closest.dist) {
+                return { dist: offsetDist, element: child };
+            } else {
+                return closest;
+            }
+        }, { dist: Number.POSITIVE_INFINITY }).element;
+    }
+    
+    container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(container, e.clientX, e.clientY);
+        if (afterElement == null) {
+            container.appendChild(draggedItem);
+        } else {
+            container.insertBefore(draggedItem, afterElement);
+        }
+    });
+
+    function updateImagePosition(draggedItem) {
+        const allThumbnails = [...container.querySelectorAll('.thumbnail')];
+        const newIndex = allThumbnails.indexOf(draggedItem);
+        const filename = draggedItem.querySelector('img').dataset.filename;
+
+        fetch('/image_number', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ number: newIndex, filename: filename })
+        })
+        .then(response => response.json())
+        .then(data => console.log('Success:', data))
+        .catch((error) => console.error('Error:', error));
+    }
+});
