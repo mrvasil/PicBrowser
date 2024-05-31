@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    image: picbrowser:latest 
+    container_name: picbrowser_container
+    ports:
+      - "12378:20191"
+    volumes:
+      - picbrowser_uploads:/app/uploads
+
+volumes:
+  picbrowser_uploads:
+    name: picbrowser_uploads
