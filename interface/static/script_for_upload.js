@@ -21,7 +21,7 @@ function uploadFolder() {
             formData.append('files[]', files[i]);
         }
 
-        // Отправляем файлы на сервер
+        document.getElementById('loading-message').style.display = 'block';
         fetch('/upload_folder', {
             method: 'POST',
             body: formData
@@ -51,6 +51,7 @@ function uploadZip() {
         let formData = new FormData();
         formData.append('file', file);
 
+        document.getElementById('loading-message').style.display = 'block';
         fetch('/upload_zip', {
             method: 'POST',
             body: formData
@@ -115,11 +116,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         if (formData.has('files[]')) {
+            document.getElementById('loading-message').style.display = 'block';
             fetch('/upload_file', {
                 method: 'POST',
                 body: formData
             }).then(response => response.text())
-              .then(data => alert('Files uploaded: ' + data))
+              .then(data => {
+                alert('Files uploaded: ' + data)
+                var iframe = parent.document.getElementById('contentFrame');
+                iframe.src = 'main';
+            })
               .catch(error => alert('Error uploading files: ' + error));
         }
     }
@@ -139,6 +145,7 @@ function handleFiles(files) {
         formData.append('files[]', files[i]);
     }
 
+    document.getElementById('loading-message').style.display = 'block';
     if (formData.has('files[]')) {
         fetch('/upload_file', {
             method: 'POST',
