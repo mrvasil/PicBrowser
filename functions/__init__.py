@@ -35,4 +35,7 @@ def get_user_code(request):
     if not user_code:
         user_code = str(uuid.uuid4())
         os.makedirs(os.path.join('uploads', user_code))
+    user_folder_path = os.path.join('uploads', user_code)
+    if not os.path.exists(user_folder_path):
+        os.makedirs(user_folder_path)
     return user_code

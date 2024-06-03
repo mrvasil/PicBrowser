@@ -182,3 +182,7 @@ body {
     text-align: center;
     width: 100%;
 }
+
+.thumbnail.dragging {
+    opacity: 0.5;
+}
