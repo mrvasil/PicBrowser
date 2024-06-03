@@ -14,7 +14,7 @@ def index():
 def page1():
     user_code = functions.get_user_code(request)
     user_folder = os.path.join('uploads', user_code)
-    image_files = [f for f in os.listdir(user_folder) if f.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+    image_files = functions.get_visible_images(user_code)
     image_paths = [os.path.join(user_code, file) for file in image_files]
     return render_template("main.html", images=image_paths)
 
@@ -54,10 +54,10 @@ def upload_folder():
             continue
         filename = secure_filename(file.filename)
         file.save(os.path.join(user_folder, filename))
+        functions.add_image_to_db(user_code, filename)
 
     response.set_cookie('user_code', user_code, max_age=31536000)
     return response, 200
-
 
 
 
@@ -76,7 +76,7 @@ def upload_zip():
 
     if file.filename == '':
         return "No selected file", 400
-    if file.content_length > 300000000:  # 300 MB
+    if file.content_length > 300000000:
         return "ZIP file size should not exceed 300 MB", 400
 
     user_folder = os.path.join('uploads', user_code)
@@ -94,7 +94,9 @@ def upload_zip():
                 zip_ref.extractall(user_folder)
             for root, dirs, files in os.walk(user_folder, topdown=False):
                 for name in files:
-                    if not name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                    if name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                        functions.add_image_to_db(user_code, name)
+                    else:
                         os.remove(os.path.join(root, name))
                 for name in dirs:
                     shutil.rmtree(os.path.join(root, name))
@@ -133,17 +135,18 @@ def upload_file():
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))
+            functions.add_image_to_db(user_code, filename)
 
     response.set_cookie('user_code', user_code, max_age=31536000)
     return response, 200
-
 
 @app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
 def delete_image(usercode, filename):
     user_code = functions.get_user_code(request)
     file_path = os.path.join('uploads', user_code, filename)
     try:
-        os.remove(file_path)
+        #os.remove(file_path)
+        functions.remove_image_from_db(user_code, filename)
         return jsonify("Success"), 200
     except Exception as e:
         return jsonify("Error"), 500
@@ -161,11 +164,11 @@ def metadata(user_code, filename):
 @app.route('/image_number', methods=['POST'])
 def update_image_position():
     data = request.get_json()
-    new_index = int(data.get('number'))+1
+    new_index = int(data.get('number'))
     filename = data.get('filename')
     user_code = functions.get_user_code(request)
-    user_folder = os.path.join('uploads', user_code)
 
-    print(new_index, filename)
+    functions.update_image_order(user_code, filename.split('/')[-1].split('\\')[-1], new_index)
+    print(new_index, filename.split('/')[-1].split('\\')[-1])
     return "ok"
     

@@ -1,8 +1,71 @@
 import uuid
 import os
 import exiftool
+import sqlite3
+import uuid
 
-import exiftool
+
+
+
+def init_db(user_code):
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    c.execute(f'''CREATE TABLE IF NOT EXISTS "{user_code}" (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  filename TEXT NOT NULL,
+                  visible BOOLEAN NOT NULL DEFAULT 1,
+                  order_index INTEGER DEFAULT 0
+                )''')
+    conn.commit()
+    conn.close()
+
+
+def add_image_to_db(user_code, filename):
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
+    exists = c.fetchone()
+    if not exists:
+        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
+        conn.commit()
+    conn.close()
+
+def remove_image_from_db(user_code, filename):
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    c.execute(f'''UPDATE "{user_code}" SET visible = 0 WHERE filename = ?''', (filename,))
+    conn.commit()
+    conn.close()
+
+def get_visible_images(user_code):
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    c.execute(f'''SELECT filename FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
+    images = [row[0] for row in c.fetchall()]
+    conn.close()
+    return images
+
+def update_image_order(user_code, filename, new_index):
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    print(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
+    c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
+    conn.commit()
+    conn.close()
+
+
+
+
+def get_user_code(request):
+    user_code = request.cookies.get('user_code')
+    if not user_code:
+        user_code = str(uuid.uuid4())
+        os.makedirs(os.path.join('uploads', user_code), exist_ok=True)
+        init_db(user_code)
+    user_folder_path = os.path.join('uploads', user_code)
+    if not os.path.exists(user_folder_path):
+        os.makedirs(user_folder_path)
+    return user_code
 
 def get_metadata(image_path):
     try:
@@ -29,13 +92,3 @@ def get_metadata(image_path):
     
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'zip'}
-
-def get_user_code(request):
-    user_code = request.cookies.get('user_code')
-    if not user_code:
-        user_code = str(uuid.uuid4())
-        os.makedirs(os.path.join('uploads', user_code))
-    user_folder_path = os.path.join('uploads', user_code)
-    if not os.path.exists(user_folder_path):
-        os.makedirs(user_folder_path)
-    return user_code
