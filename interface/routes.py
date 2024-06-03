@@ -18,7 +18,6 @@ def page1():
     image_paths = [os.path.join(user_code, file) for file in image_files]
     return render_template("main.html", images=image_paths)
 
-
 @app.route('/upload')
 def page2():
     return render_template("upload.html")

@@ -48,11 +48,26 @@ def get_visible_images(user_code):
 def update_image_order(user_code, filename, new_index):
     conn = sqlite3.connect('uploads/database.db')
     c = conn.cursor()
-    print(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
-    c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
+    # Получаем текущий список файлов с их порядковыми индексами
+    c.execute(f'''SELECT filename, order_index FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
+    files = c.fetchall()
+
+    # Создаем временный список для обновления порядка
+    updated_files = []
+    for f in files:
+        if f[0] == filename:
+            continue
+        updated_files.append(f)
+
+    # Вставляем перемещенный файл в новую позицию
+    updated_files.insert(new_index, (filename, 0))  # 0 - временное значение для order_index
+
+    # Обновляем order_index всех файлов
+    for index, file in enumerate(updated_files):
+        c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (index, file[0]))
+
     conn.commit()
     conn.close()
-
 
 
 
