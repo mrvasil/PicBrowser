@@ -65,6 +65,7 @@ def get_user_code(request):
     user_folder_path = os.path.join('uploads', user_code)
     if not os.path.exists(user_folder_path):
         os.makedirs(user_folder_path)
+        init_db(user_code)
     return user_code
 
 def get_metadata(image_path):
