@@ -8,7 +8,7 @@
 <div class="sidebar">
     <div class="thumbnail-container">
         {% for image in images %}
-        <div class="thumbnail" draggable="true"><img src="{{ url_for('uploaded_file', filename=image) }}" data-filename="{{ image }}"></div>
+        <div class="thumbnail" draggable="true"><img src="/uploads/{{image}}" data-filename="{{ image }}"></div>
         {% endfor %}
     </div>
 </div>
@@ -16,7 +16,7 @@
     <div class="image-viewer">
         <div class="image-viewer-inside">
             {% if images %}
-            <img src="{{ url_for('uploaded_file', filename=images[0]) }}" alt="Main Image">
+            <img src="/uploads/{{images[0]}}" alt="Main Image">
             {% else %}
             <div class="placeholder-text">Изображение для просмотра не выбрано :(</div>
             {% endif %}

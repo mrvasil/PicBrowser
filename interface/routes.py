@@ -16,16 +16,19 @@ def page1():
     user_folder = os.path.join('uploads', user_code)
     image_files = functions.get_visible_images(user_code)
     image_paths = [os.path.join(user_code, file) for file in image_files]
-    return render_template("main.html", images=image_paths)
+
+    response =  make_response(render_template("main.html", images=image_paths))
+    response.set_cookie('user_code', user_code, max_age=31536000)
+    return response, 200
 
 @app.route('/upload')
 def page2():
     return render_template("upload.html")
 
 
-@app.route('/uploads/<path:filename>')
-def uploaded_file(filename):
-    return send_file(os.path.join('../uploads', filename))
+@app.route('/uploads/<user_code>/<filename>')
+def uploaded_file(user_code, filename):
+    return send_file(os.path.join('../uploads', user_code, filename))
 
 
 
@@ -146,7 +149,10 @@ def delete_image(usercode, filename):
     try:
         #os.remove(file_path)
         functions.remove_image_from_db(user_code, filename)
-        return jsonify("Success"), 200
+
+        response = make_response(jsonify("Success"))
+        response.set_cookie('user_code', user_code, max_age=31536000)
+        return response, 200
     except Exception as e:
         return jsonify("Error"), 500
 
@@ -168,6 +174,7 @@ def update_image_position():
     user_code = functions.get_user_code(request)
 
     functions.update_image_order(user_code, filename.split('/')[-1].split('\\')[-1], new_index)
-    print(new_index, filename.split('/')[-1].split('\\')[-1])
-    return "ok"
-    
+
+    response = make_response("ok")
+    response.set_cookie('user_code', user_code, max_age=31536000)
+    return response, 200

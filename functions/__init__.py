@@ -48,21 +48,17 @@ def get_visible_images(user_code):
 def update_image_order(user_code, filename, new_index):
     conn = sqlite3.connect('uploads/database.db')
     c = conn.cursor()
-    # Получаем текущий список файлов с их порядковыми индексами
     c.execute(f'''SELECT filename, order_index FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
     files = c.fetchall()
 
-    # Создаем временный список для обновления порядка
     updated_files = []
     for f in files:
         if f[0] == filename:
             continue
         updated_files.append(f)
 
-    # Вставляем перемещенный файл в новую позицию
-    updated_files.insert(new_index, (filename, 0))  # 0 - временное значение для order_index
+    updated_files.insert(new_index, (filename, 0))
 
-    # Обновляем order_index всех файлов
     for index, file in enumerate(updated_files):
         c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (index, file[0]))
 
@@ -73,14 +69,21 @@ def update_image_order(user_code, filename, new_index):
 
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
-    if not user_code:
+    conn = sqlite3.connect('uploads/database.db')
+    c = conn.cursor()
+    
+    if user_code:
+        c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (user_code,))
+        exists = c.fetchone()
+    else:
+        exists = False
+
+    if not exists:
         user_code = str(uuid.uuid4())
+        init_db(user_code)
         os.makedirs(os.path.join('uploads', user_code), exist_ok=True)
-        init_db(user_code)
-    user_folder_path = os.path.join('uploads', user_code)
-    if not os.path.exists(user_folder_path):
-        os.makedirs(user_folder_path)
-        init_db(user_code)
+    
+    conn.close()
     return user_code
 
 def get_metadata(image_path):
