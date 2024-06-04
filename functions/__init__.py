@@ -2,13 +2,24 @@ import uuid
 import os
 import exiftool
 import sqlite3
-import uuid
 
+class Database:
+    conn = None
 
+    @staticmethod
+    def get_connection():
+        if Database.conn is None:
+            Database.conn = sqlite3.connect('uploads/database.db')
+        return Database.conn
 
+    @staticmethod
+    def close_connection():
+        if Database.conn is not None:
+            Database.conn.close()
+            Database.conn = None
 
 def init_db(user_code):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''CREATE TABLE IF NOT EXISTS "{user_code}" (
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,59 +28,47 @@ def init_db(user_code):
                   order_index INTEGER DEFAULT 0
                 )''')
     conn.commit()
-    conn.close()
-
 
 def add_image_to_db(user_code, filename):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
     exists = c.fetchone()
     if not exists:
         c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
         conn.commit()
-    conn.close()
 
 def remove_image_from_db(user_code, filename):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''UPDATE "{user_code}" SET visible = 0 WHERE filename = ?''', (filename,))
     conn.commit()
-    conn.close()
 
 def get_visible_images(user_code):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''SELECT filename FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
     images = [row[0] for row in c.fetchall()]
-    conn.close()
     return images
 
 def update_image_order(user_code, filename, new_index):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
-    # Получаем текущий список файлов с их порядковыми индексами
     c.execute(f'''SELECT filename, order_index FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
     files = c.fetchall()
 
-    # Создаем временный список для обновления порядка
     updated_files = []
     for f in files:
         if f[0] == filename:
             continue
         updated_files.append(f)
 
-    # Вставляем перемещенный файл в новую позицию
-    updated_files.insert(new_index, (filename, 0))  # 0 - временное значение для order_index
+    updated_files.insert(new_index, (filename, 0))
 
-    # Обновляем order_index всех файлов
     for index, file in enumerate(updated_files):
         c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (index, file[0]))
 
     conn.commit()
-    conn.close()
-
-
 
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
@@ -88,10 +87,9 @@ def get_metadata(image_path):
         with exiftool.ExifTool() as et:
             metadata = et.execute_json('-G', '-j', image_path)
 
-            specific_data={}
+            specific_data = {}
 
             file_size_bytes = metadata[0].get('File:FileSize', '-')
-
             if file_size_bytes != '-':
                 file_size_megabytes = int(file_size_bytes) / (1024 * 1024)
                 specific_data["Размер файла"] = f"{file_size_megabytes:.1f} MB"

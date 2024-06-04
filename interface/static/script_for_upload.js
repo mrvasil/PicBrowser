@@ -139,7 +139,7 @@ function handleFiles(files) {
             continue;
         }
         if (files[i].size > 50000000) {
-            alert('File size should not exceed 50 MB');
+            alert('File size of ' + files[i].name + ' should not exceed 50 MB');
             continue;
         }
         formData.append('files[]', files[i]);
