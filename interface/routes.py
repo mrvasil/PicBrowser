@@ -116,7 +116,7 @@ def upload_zip():
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     user_code = functions.get_user_code(request)
-    response = make_response("Files uploaded successfully")
+    response_text = ""
 
     if 'files[]' not in request.files:
         return "No files part", 400
@@ -129,18 +129,25 @@ def upload_file():
 
     for file in files:
         if file.filename == '':
-            return "No selected file", 400
+            response_text += "No selected file \n"
         if not file.content_type.startswith('image/'):
-            return "Only image files are allowed", 400
+            response_text += f"Only image files are allowed ({file.filename}) \n"
         if file.content_length > 50000000:
-            return "File size should not exceed 50 MB", 400
+            response_text += f"File size should not exceed 50 MB ({file.filename}) \n"
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))
             functions.add_image_to_db(user_code, filename)
 
+    if response_text == "":
+        response_text = "Files uploaded successfully"
+        message_code = 200
+    else:
+        message_code = 400
+
+    response = make_response(response_text)
     response.set_cookie('user_code', user_code, max_age=31536000)
-    return response, 200
+    return response, message_code
 
 @app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
 def delete_image(usercode, filename):
