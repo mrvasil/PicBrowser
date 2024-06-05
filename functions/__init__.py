@@ -61,7 +61,7 @@ def update_image_order(user_code, filename, new_index):
     c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
     
     conn.commit()
-    
+
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
     conn = sqlite3.connect('uploads/database.db')
