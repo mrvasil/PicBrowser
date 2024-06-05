@@ -56,8 +56,8 @@ def update_image_order(user_code, filename, new_index):
     c = conn.cursor()
     
     c.execute(f'''SELECT order_index FROM "{user_code}" WHERE filename = ?''', (filename,))
-    current_index = c.fetchone()[0]
-    
+    current_index, = c.fetchone()
+
     if current_index < new_index:
         c.execute(f'''UPDATE "{user_code}" SET order_index = order_index - 1 
                       WHERE order_index > ? AND order_index <= ?''', (current_index, new_index))
