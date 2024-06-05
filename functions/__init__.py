@@ -72,16 +72,24 @@ def update_image_order(user_code, filename, new_index):
 
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
-    if not user_code:
+    conn = Database.get_connection()
+    c = conn.cursor()
+    
+    if user_code:
+        c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (user_code,))
+        exists = c.fetchone()
+    else:
+        exists = False
+
+    if not exists:
         user_code = str(uuid.uuid4())
+        init_db(user_code)
         os.makedirs(os.path.join('uploads', user_code), exist_ok=True)
-        init_db(user_code)
-    user_folder_path = os.path.join('uploads', user_code)
-    if not os.path.exists(user_folder_path):
-        os.makedirs(user_folder_path)
-        init_db(user_code)
+    
+    Database.close_connection(conn)
     return user_code
 
+    
 def get_metadata(image_path):
     try:
         with exiftool.ExifTool() as et:
