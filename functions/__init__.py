@@ -4,19 +4,14 @@ import exiftool
 import sqlite3
 
 class Database:
-    conn = None
-
     @staticmethod
     def get_connection():
-        if Database.conn is None:
-            Database.conn = sqlite3.connect('uploads/database.db')
-        return Database.conn
+        conn = sqlite3.connect('uploads/database.db')
+        return conn
 
     @staticmethod
-    def close_connection():
-        if Database.conn is not None:
-            Database.conn.close()
-            Database.conn = None
+    def close_connection(conn):
+        conn.close()
 
 def init_db(user_code):
     conn = Database.get_connection()
@@ -28,6 +23,7 @@ def init_db(user_code):
                   order_index INTEGER DEFAULT 0
                 )''')
     conn.commit()
+    Database.close_connection(conn)
 
 def add_image_to_db(user_code, filename):
     conn = Database.get_connection()
@@ -35,20 +31,23 @@ def add_image_to_db(user_code, filename):
     c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
     exists = c.fetchone()
     if not exists:
-        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
+        c.execute(f'''INSERT INTO "{user_code}" (filename, visible) VALUES (?, 1)''', (filename,))
         conn.commit()
+    Database.close_connection(conn)
 
 def remove_image_from_db(user_code, filename):
     conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''UPDATE "{user_code}" SET visible = 0 WHERE filename = ?''', (filename,))
     conn.commit()
+    Database.close_connection(conn)
 
 def get_visible_images(user_code):
     conn = Database.get_connection()
     c = conn.cursor()
     c.execute(f'''SELECT filename FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
     images = [row[0] for row in c.fetchall()]
+    Database.close_connection(conn)
     return images
 
 def update_image_order(user_code, filename, new_index):
@@ -56,8 +55,8 @@ def update_image_order(user_code, filename, new_index):
     c = conn.cursor()
     
     c.execute(f'''SELECT order_index FROM "{user_code}" WHERE filename = ?''', (filename,))
-    current_index = c.fetchone()[0]
-    
+    current_index, = c.fetchone()
+
     if current_index < new_index:
         c.execute(f'''UPDATE "{user_code}" SET order_index = order_index - 1 
                       WHERE order_index > ? AND order_index <= ?''', (current_index, new_index))
@@ -68,24 +67,18 @@ def update_image_order(user_code, filename, new_index):
     c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
     
     conn.commit()
+    Database.close_connection(conn)
 
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
-    conn = sqlite3.connect('uploads/database.db')
-    c = conn.cursor()
-    
-    if user_code:
-        c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (user_code,))
-        exists = c.fetchone()
-    else:
-        exists = False
-
-    if not exists:
+    if not user_code:
         user_code = str(uuid.uuid4())
-        init_db(user_code)
         os.makedirs(os.path.join('uploads', user_code), exist_ok=True)
-    
-    conn.close()
+        init_db(user_code)
+    user_folder_path = os.path.join('uploads', user_code)
+    if not os.path.exists(user_folder_path):
+        os.makedirs(user_folder_path)
+        init_db(user_code)
     return user_code
 
 def get_metadata(image_path):
@@ -109,6 +102,6 @@ def get_metadata(image_path):
     except Exception as e:
         specific_data = f"ExifTool error: {str(e)}"
     return specific_data
-    
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'zip'}
