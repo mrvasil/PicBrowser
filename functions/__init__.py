@@ -53,19 +53,20 @@ def get_visible_images(user_code):
 def update_image_order(user_code, filename, new_index):
     conn = Database.get_connection()
     c = conn.cursor()
-    
-    c.execute(f'''SELECT order_index FROM "{user_code}" WHERE filename = ?''', (filename,))
-    current_index, = c.fetchone()
 
-    if current_index < new_index:
-        c.execute(f'''UPDATE "{user_code}" SET order_index = order_index - 1 
-                      WHERE order_index > ? AND order_index <= ?''', (current_index, new_index))
-    else:
-        c.execute(f'''UPDATE "{user_code}" SET order_index = order_index + 1 
-                      WHERE order_index < ? AND order_index >= ?''', (current_index, new_index))
-    
-    c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
-    
+    c.execute(f'''SELECT filename, order_index FROM "{user_code}" WHERE visible = 1 ORDER BY order_index, id''')
+    files = c.fetchall()
+
+    updated_files = []
+    for f in files:
+        if f[0] == filename:
+            continue
+        updated_files.append(f)
+
+    updated_files.insert(new_index, (filename, 0))
+
+    for index, file in enumerate(updated_files):
+        c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (index, file[0]))
     conn.commit()
     Database.close_connection(conn)
 
