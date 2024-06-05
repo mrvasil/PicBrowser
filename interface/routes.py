@@ -16,16 +16,19 @@ def page1():
     user_folder = os.path.join('uploads', user_code)
     image_files = functions.get_visible_images(user_code)
     image_paths = [os.path.join(user_code, file) for file in image_files]
-    return render_template("main.html", images=image_paths)
+
+    response =  make_response(render_template("main.html", images=image_paths))
+    response.set_cookie('user_code', user_code, max_age=31536000)
+    return response, 200
 
 @app.route('/upload')
 def page2():
     return render_template("upload.html")
 
 
-@app.route('/uploads/<path:filename>')
-def uploaded_file(filename):
-    return send_file(os.path.join('../uploads', filename))
+@app.route('/uploads/<user_code>/<filename>')
+def uploaded_file(user_code, filename):
+    return send_file(os.path.join('../uploads', user_code, filename))
 
 
 
@@ -34,7 +37,7 @@ def uploaded_file(filename):
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
     user_code = functions.get_user_code(request)
-    response = make_response("Files uploaded successfully")
+    response_text = ""
 
     if 'files[]' not in request.files:
         return "No files part", 400
@@ -44,19 +47,32 @@ def upload_folder():
         return "The number of files should not exceed 500", 400
 
     user_folder = os.path.join('uploads', user_code)
-
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
 
     for file in files:
-        if file.filename == '' or not file.content_type.startswith('image/') or file.content_length > 50000000:
-            continue
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(user_folder, filename))
-        functions.add_image_to_db(user_code, filename)
+        if file.filename == '':
+            response_text += "No selected file \n"
+        elif not file.content_type.startswith('image/'):
+            response_text += f"Only image files are allowed ({file.filename}) \n"
+        elif file.content_length > 50000000:
+            response_text += f"File size should not exceed 50 MB ({file.filename}) \n"
+        else:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(user_folder, filename))
+            add_result = functions.add_image_to_db(user_code, filename)
+            if not add_result:
+                response_text += f"Duplicate image not added ({filename}) \n"
 
+    if response_text == "":
+        response_text = "Files uploaded successfully"
+        message_code = 200
+    else:
+        message_code = 400
+
+    response = make_response(response_text)
     response.set_cookie('user_code', user_code, max_age=31536000)
-    return response, 200
+    return response, message_code
 
 
 
@@ -113,7 +129,7 @@ def upload_zip():
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     user_code = functions.get_user_code(request)
-    response = make_response("Files uploaded successfully")
+    response_text = ""
 
     if 'files[]' not in request.files:
         return "No files part", 400
@@ -126,18 +142,25 @@ def upload_file():
 
     for file in files:
         if file.filename == '':
-            return "No selected file", 400
+            response_text += "No selected file \n"
         if not file.content_type.startswith('image/'):
-            return "Only image files are allowed", 400
+            response_text += f"Only image files are allowed ({file.filename}) \n"
         if file.content_length > 50000000:
-            return "File size should not exceed 50 MB", 400
+            response_text += f"File size should not exceed 50 MB ({file.filename}) \n"
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))
             functions.add_image_to_db(user_code, filename)
 
+    if response_text == "":
+        response_text = "Files uploaded successfully"
+        message_code = 200
+    else:
+        message_code = 400
+
+    response = make_response(response_text)
     response.set_cookie('user_code', user_code, max_age=31536000)
-    return response, 200
+    return response, message_code
 
 @app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
 def delete_image(usercode, filename):
@@ -146,7 +169,10 @@ def delete_image(usercode, filename):
     try:
         #os.remove(file_path)
         functions.remove_image_from_db(user_code, filename)
-        return jsonify("Success"), 200
+
+        response = make_response(jsonify("Success"))
+        response.set_cookie('user_code', user_code, max_age=31536000)
+        return response, 200
     except Exception as e:
         return jsonify("Error"), 500
 
@@ -168,6 +194,7 @@ def update_image_position():
     user_code = functions.get_user_code(request)
 
     functions.update_image_order(user_code, filename.split('/')[-1].split('\\')[-1], new_index)
-    print(new_index, filename.split('/')[-1].split('\\')[-1])
-    return "ok"
-    
+
+    response = make_response("ok")
+    response.set_cookie('user_code', user_code, max_age=31536000)
+    return response, 200
