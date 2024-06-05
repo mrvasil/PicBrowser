@@ -83,6 +83,7 @@ body {
 }
 
 .image-viewer {
+    position: relative;
     flex: 2;
     display: flex;
     justify-content: center;
@@ -185,4 +186,26 @@ body {
 
 .thumbnail.dragging {
     opacity: 0.5;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #82828286;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0.02em 0.02em 15px rgba(0, 0, 0, 0.608);
+}
+
+#prev-image-btn {
+    left: 20px;
+}
+
+#next-image-btn {
+    right: 20px;
 }

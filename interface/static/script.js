@@ -6,7 +6,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const resetButton = document.getElementById('reset-image-btn');
     const imageContainer = document.querySelector('.image-viewer-inside');
     const image = imageContainer.querySelector('img');
+    const prevImageButton = document.getElementById('prev-image-btn');
+    const nextImageButton = document.getElementById('next-image-btn');
 
+    let initialDistance = null;
+    let currentIndex = 0;
     let isDragging = false;
     let originX, originY;
     let translateX = 0, translateY = 0;
@@ -20,6 +24,20 @@ document.addEventListener("DOMContentLoaded", function() {
         fetchMetadata(firstThumbnail.dataset.filename);
     }
 
+    prevImageButton.addEventListener('click', function() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            changeImage(currentIndex);
+        }
+    });
+
+    nextImageButton.addEventListener('click', function() {
+        if (currentIndex < thumbnails.length - 1) {
+            currentIndex++;
+            changeImage(currentIndex);
+        }
+    });
+
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
             thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
@@ -30,6 +48,17 @@ document.addEventListener("DOMContentLoaded", function() {
             fetchMetadata(this.dataset.filename);
         });
     });
+
+    function changeImage(index) {
+        const newImage = thumbnails[index];
+        mainImageViewer.src = newImage.src;
+        mainImageViewer.dataset.filename = newImage.dataset.filename;
+        filenameDisplay.textContent = newImage.dataset.filename.split('\\').pop().split('/').pop();
+        fetchMetadata(newImage.dataset.filename);
+        thumbnails.forEach(thumb => thumb.parentElement.classList.remove('selected'));
+        newImage.parentElement.classList.add('selected');
+    }
+
 
     deleteButton.addEventListener('click', function() {
         const filename = mainImageViewer.dataset.filename;
@@ -138,19 +167,19 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-function deleteImage(filename) {
-    if (filename) {
-        fetch(`/delete_image/${filename}`, { method: 'DELETE' })
-            .then(response => response.json())
-            .then(data => {
-                if (data == "Success") {
-                    window.location.reload();
-                } else {
-                    alert('Error deleting image');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
+    function deleteImage(filename) {
+        if (filename) {
+            fetch(`/delete_image/${filename}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data == "Success") {
+                        window.location.reload();
+                    } else {
+                        alert('Error deleting image');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
 }
 
 

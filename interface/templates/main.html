@@ -15,11 +15,13 @@
 <div class="main-content">
     <div class="image-viewer">
         <div class="image-viewer-inside">
+            <button id="prev-image-btn" class="nav-btn" title="Предыдущее изображение">◀</button>
             {% if images %}
-            <img src="/uploads/{{images[0]}}" alt="Main Image">
+            <img id="main-image" src="/uploads/{{images[0]}}" alt="Main Image">
             {% else %}
             <div class="placeholder-text">Изображение для просмотра не выбрано :(</div>
             {% endif %}
+            <button id="next-image-btn" class="nav-btn" title="Следующее изображение">▶</button>
         </div>
     </div>
     <div class="image-details">
