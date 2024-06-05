@@ -21,13 +21,13 @@ def init_db(user_code):
 
 
 def add_image_to_db(user_code, filename):
-    conn = sqlite3.connect('uploads/database.db')
+    conn = Database.get_connection()
     c = conn.cursor()
-    c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?) ON CONFLICT DO NOTHING''', (filename,))
-    affected_rows = c.rowcount
-    conn.commit()
-    conn.close()
-    return affected_rows > 0
+    c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
+    exists = c.fetchone()
+    if not exists:
+        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
+        conn.commit()
 
 def remove_image_from_db(user_code, filename):
     conn = sqlite3.connect('uploads/database.db')
@@ -61,9 +61,7 @@ def update_image_order(user_code, filename, new_index):
     c.execute(f'''UPDATE "{user_code}" SET order_index = ? WHERE filename = ?''', (new_index, filename))
     
     conn.commit()
-
-
-
+    
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
     conn = sqlite3.connect('uploads/database.db')
