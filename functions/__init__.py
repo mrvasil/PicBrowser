@@ -28,11 +28,11 @@ def init_db(user_code):
 def add_image_to_db(user_code, filename):
     conn = Database.get_connection()
     c = conn.cursor()
-    c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
-    exists = c.fetchone()
-    if not exists:
-        c.execute(f'''INSERT INTO "{user_code}" (filename, visible) VALUES (?, 1)''', (filename,))
-        conn.commit()
+
+    c.execute(f'''UPDATE "{user_code}" SET visible = 1 WHERE filename = ? AND visible = 0''', (filename,))
+    if c.rowcount == 0:
+        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
+    conn.commit()
     Database.close_connection(conn)
 
 def remove_image_from_db(user_code, filename):
