@@ -20,7 +20,8 @@ def init_db(user_code):
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                   filename TEXT NOT NULL,
                   visible BOOLEAN NOT NULL DEFAULT 1,
-                  order_index INTEGER DEFAULT 0
+                  order_index INTEGER DEFAULT 0,
+                  UNIQUE(filename)
                 )''')
     conn.commit()
     Database.close_connection(conn)
@@ -29,9 +30,8 @@ def add_image_to_db(user_code, filename):
     conn = Database.get_connection()
     c = conn.cursor()
 
-    c.execute(f'''UPDATE "{user_code}" SET visible = 1 WHERE filename = ? AND visible = 0''', (filename,))
-    if c.rowcount == 0:
-        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
+    c.execute(f'''INSERT INTO "{user_code}" (filename, visible) VALUES (?, 1)
+                  ON CONFLICT(filename) DO UPDATE SET visible = 1''', (filename,))
     conn.commit()
     Database.close_connection(conn)
 
