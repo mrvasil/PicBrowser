@@ -37,7 +37,7 @@ def uploaded_file(user_code, filename):
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
     user_code = functions.get_user_code(request)
-    response = make_response("Files uploaded successfully")
+    response_text = ""
 
     if 'files[]' not in request.files:
         return "No files part", 400
@@ -47,19 +47,32 @@ def upload_folder():
         return "The number of files should not exceed 500", 400
 
     user_folder = os.path.join('uploads', user_code)
-
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
 
     for file in files:
-        if file.filename == '' or not file.content_type.startswith('image/') or file.content_length > 50000000:
-            continue
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(user_folder, filename))
-        functions.add_image_to_db(user_code, filename)
+        if file.filename == '':
+            response_text += "No selected file \n"
+        elif not file.content_type.startswith('image/'):
+            response_text += f"Only image files are allowed ({file.filename}) \n"
+        elif file.content_length > 50000000:
+            response_text += f"File size should not exceed 50 MB ({file.filename}) \n"
+        else:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(user_folder, filename))
+            add_result = functions.add_image_to_db(user_code, filename)
+            if not add_result:
+                response_text += f"Duplicate image not added ({filename}) \n"
 
+    if response_text == "":
+        response_text = "Files uploaded successfully"
+        message_code = 200
+    else:
+        message_code = 400
+
+    response = make_response(response_text)
     response.set_cookie('user_code', user_code, max_age=31536000)
-    return response, 200
+    return response, message_code
 
 
 

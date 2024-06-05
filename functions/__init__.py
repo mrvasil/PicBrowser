@@ -23,12 +23,11 @@ def init_db(user_code):
 def add_image_to_db(user_code, filename):
     conn = sqlite3.connect('uploads/database.db')
     c = conn.cursor()
-    c.execute(f'''SELECT 1 FROM "{user_code}" WHERE filename = ?''', (filename,))
-    exists = c.fetchone()
-    if not exists:
-        c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?)''', (filename,))
-        conn.commit()
+    c.execute(f'''INSERT INTO "{user_code}" (filename) VALUES (?) ON CONFLICT DO NOTHING''', (filename,))
+    affected_rows = c.rowcount
+    conn.commit()
     conn.close()
+    return affected_rows > 0
 
 def remove_image_from_db(user_code, filename):
     conn = sqlite3.connect('uploads/database.db')
