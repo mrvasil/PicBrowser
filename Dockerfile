@@ -12,6 +12,6 @@ RUN apt-get update && \
 
 COPY . .
 
-EXPOSE 20191
+EXPOSE 12378
 
 CMD ["python", "run.py"]

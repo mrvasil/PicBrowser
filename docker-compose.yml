@@ -5,7 +5,7 @@ services:
     image: picbrowser:latest 
     container_name: picbrowser_container
     ports:
-      - "12378:20191"
+      - "12378:12378"
     volumes:
       - picbrowser_uploads:/app/uploads
 
