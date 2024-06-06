@@ -64,13 +64,17 @@ body {
 .sidebar {
     flex: 1;
     background-color: #292929;
-    padding: 10px;
+    padding: 3px;
     box-sizing: border-box;
     margin: 10px;
     margin-left: 0px;
     border: 0;
     border-radius: 13px;
     box-shadow: 0.01em 0.01em 10px rgba(57, 57, 57, 0.494);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
 }
 
 .main-content {
@@ -146,6 +150,11 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     gap: 10px;
+    overflow: auto;
+    border: 0;
+    border-radius: 13px;
+    padding: 8px;
+    padding-bottom: 130px; 
 }
 
 .thumbnail img {
@@ -154,11 +163,11 @@ body {
     object-fit: cover;
     border: 0;
     border-radius: 5px;
-    box-shadow: 0.02em 0.02em 15px rgba(0, 0, 0, 0.608);
+    box-shadow: 0.02em 0.02em 8px rgba(0, 0, 0, 0.808);
 }
 
 .thumbnail.selected img {
-    box-shadow: 0.02em 0.02em 20px rgb(255, 255, 255);
+    box-shadow: 0.02em 0.02em 8px rgb(255, 255, 255);
 }
 
 .default-btn {
@@ -171,7 +180,6 @@ body {
     width: 49px;
     height: 49px;
     transition: background-color 0.3s;
-    /* margin-left: 10px; */
     font-family: 'SFProText';
 }
 .default-btn:hover {
@@ -222,3 +230,34 @@ body {
     background-color: rgba(250, 28, 28, 0.565);
 }
 
+.sidebar-filters {
+    padding: 10px;
+    margin-top: auto;
+    background-color: #191919;
+    height: 100px;
+    border: 0px;
+    border-radius: 13px;
+    box-shadow: 0.01em 0.01em 15px rgba(17, 17, 17, 0.608);
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+}
+
+
+
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #292929;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #828282;
+    border-radius: 10px;
+    border: 2px solid #292929;
+}
