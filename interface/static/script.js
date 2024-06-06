@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    thumbnails.forEach(thumbnail => {
+    thumbnails.forEach((thumbnail, index) => {
         thumbnail.addEventListener('click', function() {
             if (!this.parentElement.classList.contains('selected')) {
                 thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 filenameDisplay.textContent = this.dataset.filename.split('\\').pop().split('/').pop();
                 fetchMetadata(this.dataset.filename);
                 resetTransform();
+                currentIndex = index;
             }
         });
     });
