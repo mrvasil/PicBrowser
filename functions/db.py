@@ -31,7 +31,8 @@ def init_db():
                     user_code TEXT NOT NULL,
                     action_type TEXT NOT NULL,
                     filename TEXT NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    resolved BOOLEAN NOT NULL DEFAULT 0
                 )''')
     conn.commit()
     Database.close_connection(conn)
@@ -112,13 +113,13 @@ def log_user_action(user_code, action_type, filename):
 def undo_last_action(user_code):
     conn = Database.get_connection()
     c = conn.cursor()
-    c.execute('''SELECT id, action_type, filename FROM user_actions WHERE user_code = ? ORDER BY id DESC LIMIT 1''', (user_code,))
+    c.execute('''SELECT id, action_type, filename FROM user_actions WHERE user_code = ? AND resolved = 0 ORDER BY id DESC LIMIT 1''', (user_code,))
     last_action = c.fetchone()
     if last_action:
         action_id, action_type, filename = last_action
         if action_type == 'delete':
             c.execute('''UPDATE images SET visible = 1 WHERE user_code = ? AND filename = ?''', (user_code, filename))
             conn.commit()
-        c.execute('''DELETE FROM user_actions WHERE id = ?''', (action_id,))
+        c.execute('''UPDATE user_actions SET resolved = 1 WHERE id = ?''', (action_id,))
         conn.commit()
     Database.close_connection(conn)
