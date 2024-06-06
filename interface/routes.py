@@ -1,5 +1,5 @@
 from interface import app
-import functions
+from functions import functions, db  
 from flask import render_template, send_file, request, jsonify, make_response, send_file
 from werkzeug.utils import secure_filename
 import zipfile
@@ -12,9 +12,9 @@ def index():
 
 @app.route('/main')
 def page1():
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     user_folder = os.path.join('uploads', user_code)
-    image_files = functions.get_visible_images(user_code)
+    image_files = db.get_visible_images(user_code)
     image_paths = [os.path.join(user_code, file) for file in image_files]
 
     response =  make_response(render_template("main.html", images=image_paths))
@@ -36,7 +36,7 @@ def uploaded_file(user_code, filename):
 
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     response_text = ""
 
     if 'files[]' not in request.files:
@@ -60,7 +60,7 @@ def upload_folder():
         else:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))
-            add_result = functions.add_image_to_db(user_code, filename)
+            add_result = db.add_image_to_db(user_code, filename)
             if not add_result:
                 response_text += f"Duplicate image not added ({filename}) \n"
 
@@ -81,7 +81,7 @@ def upload_folder():
 
 @app.route('/upload_zip', methods=['POST'])
 def upload_zip():
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     response = make_response("ZIP file uploaded successfully")
 
     if 'file' not in request.files:
@@ -110,7 +110,7 @@ def upload_zip():
             for root, dirs, files in os.walk(user_folder, topdown=False):
                 for name in files:
                     if name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                        functions.add_image_to_db(user_code, name)
+                        db.add_image_to_db(user_code, name)
                     else:
                         os.remove(os.path.join(root, name))
                 for name in dirs:
@@ -128,7 +128,7 @@ def upload_zip():
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     response_text = ""
 
     if 'files[]' not in request.files:
@@ -150,7 +150,7 @@ def upload_file():
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(user_folder, filename))
-            functions.add_image_to_db(user_code, filename)
+            db.add_image_to_db(user_code, filename)
 
     if response_text == "":
         response_text = "Files uploaded successfully"
@@ -164,11 +164,11 @@ def upload_file():
 
 @app.route('/delete_image/<usercode>/<filename>', methods=['DELETE'])
 def delete_image(usercode, filename):
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     file_path = os.path.join('uploads', user_code, filename)
     try:
         #os.remove(file_path)
-        functions.remove_image_from_db(user_code, filename)
+        db.remove_image_from_db(user_code, filename)
 
         response = make_response(jsonify("Success"))
         response.set_cookie('user_code', user_code, max_age=31536000)
@@ -191,9 +191,9 @@ def update_image_position():
     data = request.get_json()
     new_index = int(data.get('number'))
     filename = data.get('filename')
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
 
-    functions.update_image_order(user_code, filename.split('/')[-1].split('\\')[-1], new_index)
+    db.update_image_order(user_code, filename.split('/')[-1].split('\\')[-1], new_index)
 
     response = make_response("ok")
     response.set_cookie('user_code', user_code, max_age=31536000)
@@ -203,11 +203,11 @@ def update_image_position():
 
 @app.route('/delete_all_files', methods=['DELETE'])
 def delete_all_files():
-    user_code = functions.get_user_code(request)
+    user_code = db.get_user_code(request)
     user_folder = os.path.join('uploads', user_code)
     try:
         shutil.rmtree(user_folder)
-        functions.remove_all_images_from_db(user_code)
+        db.remove_all_images_from_db(user_code)
         
         return jsonify(success=True), 200
     except Exception as e:
