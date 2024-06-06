@@ -40,12 +40,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function() {
-            thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
-            this.parentElement.classList.add('selected');
-            mainImageViewer.src = this.src;
-            mainImageViewer.dataset.filename = this.dataset.filename;
-            filenameDisplay.textContent = this.dataset.filename.split('\\').pop().split('/').pop();
-            fetchMetadata(this.dataset.filename);
+            if (!this.parentElement.classList.contains('selected')) {
+                thumbnails.forEach(img => img.parentElement.classList.remove('selected'));
+                this.parentElement.classList.add('selected');
+                mainImageViewer.src = this.src;
+                mainImageViewer.dataset.filename = this.dataset.filename;
+                filenameDisplay.textContent = this.dataset.filename.split('\\').pop().split('/').pop();
+                fetchMetadata(this.dataset.filename);
+                resetTransform();
+            }
         });
     });
 
@@ -57,8 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetchMetadata(newImage.dataset.filename);
         thumbnails.forEach(thumb => thumb.parentElement.classList.remove('selected'));
         newImage.parentElement.classList.add('selected');
+        resetTransform();
     }
-
 
     deleteButton.addEventListener('click', function() {
         const filename = mainImageViewer.dataset.filename;
