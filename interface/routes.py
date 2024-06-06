@@ -169,6 +169,7 @@ def delete_image(usercode, filename):
     try:
         #os.remove(file_path)
         db.remove_image_from_db(user_code, filename)
+        db.log_user_action(user_code, 'delete', filename)
 
         response = make_response(jsonify("Success"))
         response.set_cookie('user_code', user_code, max_age=31536000)
@@ -212,4 +213,14 @@ def delete_all_files():
         return jsonify(success=True), 200
     except Exception as e:
         print(e)
+        return jsonify(success=False, error=str(e)), 500
+
+
+@app.route('/undo_last_action', methods=['POST'])
+def undo_last_action():
+    user_code = db.get_user_code(request)
+    try:
+        db.undo_last_action(user_code)
+        return jsonify(success=True), 200
+    except Exception as e:
         return jsonify(success=False, error=str(e)), 500

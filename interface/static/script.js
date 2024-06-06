@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const image = imageContainer.querySelector('img');
     const prevImageButton = document.getElementById('prev-image-btn');
     const nextImageButton = document.getElementById('next-image-btn');
+    const cancelButton = document.getElementById('cancel-btn');
 
     let initialDistance = null;
     let currentIndex = 0;
@@ -144,6 +145,28 @@ document.addEventListener("DOMContentLoaded", function() {
 
     resetButton.addEventListener('click', function() {
         resetTransform();
+    });
+
+    cancelButton.addEventListener('click', function() {
+        fetch('/undo_last_action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Действие отменено успешно.');
+                window.location.reload(); // Перезагрузка страницы для отображения изменений
+            } else {
+                alert('Ошибка при отмене действия: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при отправке запроса на отмену действия:', error);
+            alert('Ошибка при отправке запроса на отмену действия.');
+        });
     });
 
     function updateTransform() {

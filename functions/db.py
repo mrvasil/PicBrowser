@@ -26,6 +26,13 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS user_codes (
                     user_code TEXT PRIMARY KEY
             )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS user_actions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_code TEXT NOT NULL,
+                    action_type TEXT NOT NULL,
+                    filename TEXT NOT NULL,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )''')
     conn.commit()
     Database.close_connection(conn)
 
@@ -93,3 +100,25 @@ def get_user_code(request):
     conn.commit()
     Database.close_connection(conn)
     return user_code
+
+
+def log_user_action(user_code, action_type, filename):
+    conn = Database.get_connection()
+    c = conn.cursor()
+    c.execute('''INSERT INTO user_actions (user_code, action_type, filename) VALUES (?, ?, ?)''', (user_code, action_type, filename))
+    conn.commit()
+    Database.close_connection(conn)
+
+def undo_last_action(user_code):
+    conn = Database.get_connection()
+    c = conn.cursor()
+    c.execute('''SELECT id, action_type, filename FROM user_actions WHERE user_code = ? ORDER BY id DESC LIMIT 1''', (user_code,))
+    last_action = c.fetchone()
+    if last_action:
+        action_id, action_type, filename = last_action
+        if action_type == 'delete':
+            c.execute('''UPDATE images SET visible = 1 WHERE user_code = ? AND filename = ?''', (user_code, filename))
+            conn.commit()
+        c.execute('''DELETE FROM user_actions WHERE id = ?''', (action_id,))
+        conn.commit()
+    Database.close_connection(conn)
