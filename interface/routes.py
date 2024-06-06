@@ -198,3 +198,18 @@ def update_image_position():
     response = make_response("ok")
     response.set_cookie('user_code', user_code, max_age=31536000)
     return response, 200
+
+
+
+@app.route('/delete_all_files', methods=['DELETE'])
+def delete_all_files():
+    user_code = functions.get_user_code(request)
+    user_folder = os.path.join('uploads', user_code)
+    try:
+        shutil.rmtree(user_folder)
+        functions.remove_all_images_from_db(user_code)
+        
+        return jsonify(success=True), 200
+    except Exception as e:
+        print(e)
+        return jsonify(success=False, error=str(e)), 500

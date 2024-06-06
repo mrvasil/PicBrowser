@@ -209,3 +209,16 @@ body {
 #next-image-btn {
     right: 20px;
 }
+
+
+.delete-all-btn {
+    margin-top: auto;
+    margin-bottom: 1px;
+    box-shadow: inset 0 0 0px rgba(255, 93, 93, 0.551);
+    background-color: rgba(237, 23, 23, 0.377);
+}
+
+.delete-all-btn:hover {
+    background-color: rgba(250, 28, 28, 0.565);
+}
+

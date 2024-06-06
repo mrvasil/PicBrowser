@@ -70,6 +70,17 @@ def update_image_order(user_code, filename, new_index):
     conn.commit()
     Database.close_connection(conn)
 
+
+def remove_all_images_from_db(user_code):
+    conn = Database.get_connection()
+    c = conn.cursor()
+    try:
+        c.execute(f'''DROP TABLE IF EXISTS "{user_code}"''')
+        conn.commit()
+    finally:
+        Database.close_connection(conn)
+
+
 def get_user_code(request):
     user_code = request.cookies.get('user_code')
     conn = Database.get_connection()

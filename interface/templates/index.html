@@ -11,6 +11,7 @@
     <div class="menu">
         <button class="menu-item" onclick="loadPage('main')">Редактор</button>
         <button class="menu-item" onclick="loadPage('upload')">Загрузить фото</button>
+        <button class="menu-item delete-all-btn" onclick="">Удалить всё</button>
     </div>
     <div id="content">
         <iframe id="contentFrame" style="width:100%; height:100vh; border:none;"></iframe>
@@ -25,6 +26,26 @@
         window.onload = function() {
             loadPage('main');
         };
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteAllButton = document.querySelector('.delete-all-btn');
+            deleteAllButton.addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите удалить все файлы?\nЭто действие необратимо!')) {
+                    fetch('/delete_all_files', { method: 'DELETE' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Все файлы удалены.');
+                                window.location.reload();
+                            } else {
+                                alert('Ошибка при удалении файлов.');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+        });
     </script>
 </body>
 </html>
