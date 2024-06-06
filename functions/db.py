@@ -123,3 +123,17 @@ def undo_last_action(user_code):
         c.execute('''UPDATE user_actions SET resolved = 1 WHERE id = ?''', (action_id,))
         conn.commit()
     Database.close_connection(conn)
+
+def redo_last_action(user_code):
+    conn = Database.get_connection()
+    c = conn.cursor()
+    c.execute('''SELECT id, action_type, filename FROM user_actions WHERE user_code = ? AND resolved = 1 ORDER BY id ASC LIMIT 1''', (user_code,))
+    last_resolved_action = c.fetchone()
+    if last_resolved_action:
+        action_id, action_type, filename = last_resolved_action
+        if action_type == 'delete':
+            c.execute('''UPDATE images SET visible = 0 WHERE user_code = ? AND filename = ?''', (user_code, filename))
+            conn.commit()
+        c.execute('''UPDATE user_actions SET resolved = 0 WHERE id = ?''', (action_id,))
+        conn.commit()
+    Database.close_connection(conn)

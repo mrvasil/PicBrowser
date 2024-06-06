@@ -224,3 +224,12 @@ def undo_last_action():
         return jsonify(success=True), 200
     except Exception as e:
         return jsonify(success=False, error=str(e)), 500
+
+@app.route('/redo_last_action', methods=['POST'])
+def redo_last_action():
+    user_code = db.get_user_code(request)
+    try:
+        db.redo_last_action(user_code)
+        return jsonify(success=True), 200
+    except Exception as e:
+        return jsonify(success=False, error=str(e)), 500
