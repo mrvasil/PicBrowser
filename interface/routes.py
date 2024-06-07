@@ -28,7 +28,7 @@ def page2():
 
 @app.route('/uploads/<user_code>/<filename>')
 def uploaded_file(user_code, filename):
-    return send_file(os.path.join('../uploads', user_code, filename))
+    return send_file(os.path.join('..', 'uploads', user_code, filename))
 
 
 
@@ -233,6 +233,32 @@ def redo_last_action():
         return jsonify(success=True), 200
     except Exception as e:
         return jsonify(success=False, error=str(e)), 500
+
+
+
+
+
+@app.route('/export_zip', methods=['GET'])
+def export_zip():
+    user_code = db.get_user_code(request)
+    user_folder = os.path.join('uploads', user_code)
+    zip_filename = f"picbrowser.zip"
+    zip_path = os.path.join('uploads', user_code, zip_filename)
+    preserve_order = request.args.get('preserve_order') == 'true'
+
+    with zipfile.ZipFile(zip_path, 'w') as zipf:
+        if preserve_order:
+            images = db.get_visible_images(user_code)
+            for index, filename in enumerate(images):
+                file_path = os.path.join(user_folder, filename)
+                zipf.write(file_path, arcname=f"IMG_{index+1}.jpg")
+        else:
+            for root, dirs, files in os.walk(user_folder):
+                for file in files:
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                        zipf.write(os.path.join(root, file), arcname=file)
+
+    return send_file(os.path.join('..', 'uploads', user_code, zip_filename))
 
 # @app.route('/get_similarity_images')
 # def get_similarity_images():

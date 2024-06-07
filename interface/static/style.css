@@ -164,8 +164,8 @@ body {
     border: 0;
     border-radius: 5px;
     box-shadow: 0.02em 0.02em 8px rgba(0, 0, 0, 0.808);
+    cursor: grab;
 }
-
 .thumbnail.selected img {
     box-shadow: 0.02em 0.02em 8px rgb(255, 255, 255);
 }
@@ -220,7 +220,6 @@ body {
 
 
 .delete-all-btn {
-    margin-top: auto;
     margin-bottom: 1px;
     box-shadow: inset 0 0 0px rgba(255, 93, 93, 0.551);
     background-color: rgba(237, 23, 23, 0.377);
@@ -244,7 +243,33 @@ body {
     right: 6px;
 }
 
+.export-div {
+    margin-top: auto;
+    height: 200px;
+    border: 0px;
+    border-radius: 13px;
+    width: 161px;
+    background-color: #191919;
+    padding: 5px;
+    padding-top: 0px;
+    margin-bottom: 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
 
+.export-btn {
+    width: 151px;
+    height: 40px;
+    font-size: 88%;
+    margin-top: 67px;
+}
+
+.export-text {
+    margin-top: 12px;
+    font-size: 88%;
+    margin-left: 3px;
+}
 
 
 *::-webkit-scrollbar {

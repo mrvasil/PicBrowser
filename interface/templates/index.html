@@ -11,6 +11,15 @@
     <div class="menu">
         <button class="menu-item" onclick="loadPage('main')">Редактор</button>
         <button class="menu-item" onclick="loadPage('upload')">Загрузить фото</button>
+        <div class="export-div">
+            <div class="export-text">
+                    <div style="margin-left: 3px;">Экспортировать фото</div>
+                    <br>
+                    <input type="checkbox" id="filter-checkbox">
+                    <label for="filter-checkbox" style="font-size: 80%;">Сохранить порядок</label>
+            </div>
+            <button class="default-btn export-btn" >Экспорт ZIP</button>
+        </div>
         <button class="menu-item delete-all-btn" onclick="">Удалить всё</button>
     </div>
     <div id="content">
@@ -28,6 +37,16 @@
         };
 
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const exportButton = document.querySelector('.export-btn');
+            const preserveOrderCheckbox = document.getElementById('filter-checkbox');
+            
+            exportButton.addEventListener('click', function() {
+                const preserveOrder = preserveOrderCheckbox.checked;
+                window.location.href = `/export_zip?preserve_order=${preserveOrder}`;
+            });
+        });
+        
         document.addEventListener("DOMContentLoaded", function() {
             const deleteAllButton = document.querySelector('.delete-all-btn');
             deleteAllButton.addEventListener('click', function() {
