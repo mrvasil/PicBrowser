@@ -81,6 +81,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.code == 'KeyY' && (e.ctrlKey || e.metaKey) && e.type == 'keydown') {
             decancelButton.click();
         }
+        if (e.key == 'Delete' && e.type === 'keydown') {
+            deleteButton.click();
+        }
+        if (e.code == 'Space' && e.type === 'keydown') {
+            resetButton.click();
+        }
     }
 
     deleteButton.addEventListener('click', function() {

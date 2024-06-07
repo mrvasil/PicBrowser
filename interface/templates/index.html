@@ -43,6 +43,13 @@
             if (e.code === 'KeyY' && (e.ctrlKey || e.metaKey) && e.type === 'keydown') {
                 document.getElementById('contentFrame').contentWindow.document.getElementById('decancel-btn').click();
             }
+            if (e.code === 'Space' && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('reset-image-btn').click();
+            }
+            if (e.key === 'Delete' && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('delete-image-btn').click();
+            }
+
         }
 
         function loadPage(pageUrl) {
