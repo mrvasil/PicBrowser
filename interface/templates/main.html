@@ -21,27 +21,27 @@
 <div class="main-content">
     <div class="image-viewer">
         <div class="image-viewer-inside">
-            <button id="prev-image-btn" class="nav-btn" title="Предыдущее изображение">◀</button>
+            <button id="prev-image-btn" class="nav-btn" title="Предыдущее изображение (стрелка влево на клавиатуре)">◀</button>
             {% if images %}
             <img id="main-image" src="/uploads/{{images[0]}}" alt="Main Image">
             {% else %}
             <div class="placeholder-text">Изображение для просмотра не выбрано :(</div>
             {% endif %}
-            <button id="next-image-btn" class="nav-btn" title="Следующее изображение">▶</button>
+            <button id="next-image-btn" class="nav-btn" title="Следующее изображение (стрелка вправо на клавиатуре)">▶</button>
         </div>
     </div>
     <div class="image-details">
         <div class="details-left">
-            <button id="delete-image-btn" class="default-btn" title="Удалить фото">
+            <button id="delete-image-btn" class="default-btn" title="Удалить фото (Del)">
                 <img height="37px" width="37px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB2ElEQVR4nO2WsY0UURBEJwOy4QgPkwQ4iAEIZdRvDUDEgfAHrXAQDsa/VU3tvid9c6TuqurSbJuIiIiIiMiJAN4Cx8qbmXfpPR5WfDQhLz6akBefezbhVmJR8tL6a0CadALxAvIiYAXlhSD00g1kBaVJJxAvIC8Cj1xB/1I38J3NX78A5fPXL0D5/PULUD5//QKUz1+/AOXz1y9A+fz1C1A+//IClH8fJy0AGtAtIF4AGrBCOoF4Ad0CYgWhASukE4gX0C0gVhAasEI6gXgB3QJiBaEBK6QTiBfQLSBWEBqwQjqBeAHdAmIFoQErpBOIF9AtIFYQGrBCOoF4Ad0CYgWhASukE4gX0C0gVhAasEI6gXgB3QJiBaEBK6QTiBfQLSBWEBqwQjqBeAHdAmIFoQErpBOIF9AtIFYQGrBCOoF4Ad0CYgWhASukE4gXsCZgmoevoDQaEEYDwmhAGA0IowFhNCBMvQEz8+t/S7S+mfm5nZ2Z+ZEWitu979vZmZmPJxDquNF7v52dfd/fnECo40bv9dYA8OUEYh0v/D5tLez7/mpmvp5AtOMl3nWX605bE9eBgc/3kPy9Tfy/uVwuT8CH6x9Ewy/q/JnxG/Bc0/kiIiIiIrI18RsPve6dwWXLNAAAAABJRU5ErkJggg==">
             </button>
-            <button id="reset-image-btn" class="default-btn" title="Сбросить масштаб">
+            <button id="reset-image-btn" class="default-btn" title="Сбросить масштаб (Пробел)">
                 <img height="37px" width="37px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAABhklEQVR4nO2ZQZIDIQzE+P/n9CT2vldnoiFIVRxT6baxDcxaERERERER/wD2ZJ0eUGz/ugAZ3b8uQEb3rwuQ0f1PBdy+VgmgBNi7kCrADwS1ID8YCKsZQAnQdyFVgB8Ibm1B63Cw/esCZHT/ugAZ3b8uQOZ1/n894K/3rwuQ0f3rAmR0/7oAGd3/VMB0qCEHwP7/EkAJ2FVALWjXgmgGNIRpCO9OQR1Dd8dQugd0EaOL2O4m3FPE7iniYXqKoKeIXkPpKWL3FHHo9wDk36/bP8hQAkrAiCqAWhC1oGYADWEawp2COO8YasPtx1AbSkAJGFEFUAuaUAuSoRlQAkY0A7h7BnD4a+rjAbD/nxJQAh6lCqAWRC2oGUBDmIZwpyDuO4ba6P51ATK6f12AjO5fFyDzdf9PX+3fju5fFyCj+9cFyOj+dQEyuv+pgNvXKgGUAHsXUgX4gaAW5AcDYTUDKAH6LqQK8APBrS1oHQ62f12AjO5fFyCj+9cFyNzuPyIiIiIi1sf5AzyJNLOCXoBSAAAAAElFTkSuQmCC">
             </button>
-            <button id="cancel-btn" class="default-btn" title="Отменить действие">
+            <button id="cancel-btn" class="default-btn" title="Отменить действие (Ctrl+Z)">
                 <img height="37px" width="37px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADeklEQVR4nO2cT29NQRjGJ2jZUUGCjQgbYUN8AiTiz4Yv0KBrIsQCZaEWFhI7rKQLoV/ikqhuZp5n7snZuNqGhKQlbYkNifTKyW0XKjHnSuqdmfv+kln36fOcmTnzznuPMYqiKIqiKIqiKIqiKIqyCpC8rcYKmk+yLfX3e5pl8zUAYfM1AGHzNQBh8zUAYfM1AGHzNQBh8zUAYfM1AGHzNQBh8zUAYfMlBoAfAOYBTJF8CeCx9/4ygMNjY2NrTaqkYD7D4SwAeO69P22t7TOpkIP5/DOMWQDDRVEMmJjJ0Xz+Pr4CuNVoNDaYGOmBANpLY9I5d9zECMlrERjUXu0BYJHkg7Is+01s9NBMaJOc8N5vM7HRKzOBndkwDWCviY3YD2LW2r7qzQbAPu/9GQB3SI6T/PkPQXwsimK3iY0USxHW2u0ArpB812UIb2NdjpIsxllr+wCcBzDTzZ6Q7MZsIoXkJpJPutgT7psYSf1ChuRgVT+qEcBizOeEpK8kARwF8K3GTJhM7sRsEsE5d6TmTBg2sZJ6WwrJwRqz4Eu1f5hYSb0xizU2ZgA3Tcyk3JpYdA5xs4EAZhqNxjoTMyk35wK4EJoF3vtTJnZSbU+31vaFTswAnknrzBp0yhZ/C2A+6Tvm2HHO7QgV8Jxzh6R1Zg3J14G94JK0xqwhORJYhh5Ja8wa59zZwAx4Ia0xa7z3+wMzYFpaY9ZYa7cEZsBnaY1Z02q11gdmwHdpjVnT0gBk0SUo/k14SlpjT7+GAmhIa8wakncDATyU1pg1JCcCAVyU1tjTxbhms3lQWme2kLwaePrn2u32GmmdWWI7FzLvA6fgp9I6s4XkUOhKEsAJaZ1ZUhTFAMlPyV/KpwrJ0dDTT/KGtM4s8d6fq7H0LFhrN0przQ50+kODrYkkr0trzQ7Ub85tVRVSab3ZLTuo2Z4O4Ji03tzedkZrPPXLAdyT1pzTIWso9Kq5Yown9W2JGCG5c6m8EDrhrnzy3wDYKq0/Gcqy7C/LcnOz2TywVM8fWapqdv0zVQAfSO4yMdHtP5HqADDlnNtjYqNHzH8V7bKTufGL0X6sYxlpk7h6o5XEe36GT/1CVV5I5oSbkfEzVVUzucJa4qbPVTdZJE8mW89P5LOVc9Wv2qu+naqHv+peqC7Q9Q5XURRFURRFURRFURRFURRFURTzH/gFYjG9ASo6MV4AAAAASUVORK5CYII=">
             </button>
-            <button id="decancel-btn" class="default-btn" title="Повторить действие">
+            <button id="decancel-btn" class="default-btn" title="Повторить действие (Ctrl+Y)">
                 <img height="37px" width="37px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADkElEQVR4nO2cSWsVQRSFC5x36sJx47CLuBL9AwoKUUHdi0F/gNPWAYngyoU7FcSlxh/xQMmTSNc5lSYbn0PcaFRw3hiJtlxoRQRfd4c8a+j7Qe3vO6f6VtW9Vc8YRVEURVEURVEURVEURWkpAK74jqHVkCzUBM8GqAkBGKAmBGCAmhCAAWpCAAaoCQEYoCYEYICaEIABakIABqgJARiQjAljY2OLSO5yzp0meRPAfQDPAbwn+a2JIJ7GRRMbWZYtsdYeJHmP5McARGyHCVNTU6slWJJvAxCtaI0J3W53BclLAD4HIFTRKhNIDktOD0CcolUGSJ6XXQKAHwEIUwx6ALhgQmFiYmIdyUe+RWEbZ75zbjPJXgCiFK2b+VmWbSX5ah4/ZI7kOIBR59xhAEN5nq+SNPa/f0O0M79MO08bzp5pAGeyLFtvAiFK8Xu93rKGOX+G5IiPGV5FdOILJK81mPW3SK40gcIIxR+us9UE8BXAURM4jEl8OeHWOWQB+GKt3W0igLGIL0h5oc7Mj0V8IRrxpbBWp7YTQ9r5kyjEF8qqZuWCayKDMYgv28caJeWZkHc7/yJ48YWymVK1XRsxEcLQxRfKTla/1DMd4iGrDsGLX/Zw+7YRpbzgO85kkQZ6ReqZC6m2kxzl7YV+Boz7jjFp5OpIRfoZ9R1j0gB4UPEFHPIdY9LIDqfiCxjyHWPSAHjXzwApUfiOMWkAzFYYsNR3jEmjBnhGU1DgizDJbb5jTBq5Pq7bUI8AuKEHMY+QPKWlCI8A2FnxBXwnudFnjEkj5WgAHypMOOs7zqQBcLciDb2ItSETBc65AzUa8sd9x5ks5eOLNxUGvI6xKR8NAM7XaMzf9h1nssj9fZKfaphwzHesySKvQ2qsBbMA9viONUk6nc7yOo8y5HKumjAgnHN7a15Plz6CpqNBAOBqjbXg98Is68dAAmkr0gUj+bCuCbKFBXBCD2sLiHNuDcknDb6EQk7MUraw1m5YyFhaS57nW0i+bGhCUT5T7ZK8bK09Mjk5uV2a+9pfngckNwF4PA8TihiHCZE8z9c2WRMY8TCh0ul0FstV77I/4F0ots2AX1hr9zV9Qc+IhonlxFwW7+rUjoqYhokJKU8DOFeWqosUhokRWR+cc/sB3Cn/HdG7kK0y4O8es7V2B8mTAK4D6AB4Jjfwqq5BhjB866coiqIoiqIoiqIoiqIoiqIoigmen/xKuyFibLOoAAAAAElFTkSuQmCC">
             </button>
         </div>

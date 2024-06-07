@@ -28,7 +28,7 @@ function uploadFolder() {
         }).then(response => {
             return response.text();
         }).then(data => {
-            alert('Папка загружена: ' + data);
+            // alert('Папка загружена: ' + data);
             var iframe = parent.document.getElementById('contentFrame');
             iframe.src = 'main';
         }).catch(error => {
@@ -58,7 +58,7 @@ function uploadZip() {
         }).then(response => {
             return response.text();
         }).then(data => {
-            alert('ZIP загружен: ' + data);
+            // alert('ZIP загружен: ' + data);
             var iframe = parent.document.getElementById('contentFrame');
             iframe.src = 'main';
         }).catch(error => {
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             }).then(response => response.text())
               .then(data => {
-                alert('Files uploaded: ' + data)
+                // alert('Files uploaded: ' + data)
                 var iframe = parent.document.getElementById('contentFrame');
                 iframe.src = 'main';
             })
@@ -152,7 +152,7 @@ function handleFiles(files) {
             body: formData
         }).then(response => response.text())
           .then(data => {
-              alert('Files uploaded: ' + data);
+            //   alert('Files uploaded: ' + data);
               var iframe = parent.document.getElementById('contentFrame');
               iframe.src = 'main';
           })
