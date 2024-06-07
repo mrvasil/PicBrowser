@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextImageButton = document.getElementById('next-image-btn');
     const cancelButton = document.getElementById('cancel-btn');
     const decancelButton = document.getElementById('decancel-btn');
+    
+    document.onkeydown = document.onkeyup = document.onkeypress = pressing_the_key;
 
     let initialDistance = null;
     let currentIndex = 0;
@@ -64,6 +66,21 @@ document.addEventListener("DOMContentLoaded", function() {
         thumbnails.forEach(thumb => thumb.parentElement.classList.remove('selected'));
         newImage.parentElement.classList.add('selected');
         resetTransform();
+    }
+
+    function pressing_the_key(e) {
+        if (e.key == 'ArrowRight' && e.type == 'keydown') {
+            nextImageButton.click();
+        }
+        if (e.key == 'ArrowLeft' && e.type == 'keydown') {
+            prevImageButton.click();
+        }
+        if (e.code == 'KeyZ' && (e.ctrlKey || e.metaKey) && e.type == 'keydown') {
+            cancelButton.click();
+        }
+        if (e.code == 'KeyY' && (e.ctrlKey || e.metaKey) && e.type == 'keydown') {
+            decancelButton.click();
+        }
     }
 
     deleteButton.addEventListener('click', function() {

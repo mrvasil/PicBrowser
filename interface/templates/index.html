@@ -27,6 +27,24 @@
     </div>
 
     <script>
+        document.onkeydown = document.onkeyup = document.onkeypress = pressing_the_key;
+    
+        function pressing_the_key(e) {
+            if (e.key === 'ArrowRight' && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('next-image-btn').click();
+            }
+            if (e.key === 'ArrowLeft' && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('prev-image-btn').click();
+            }
+
+            if (e.code === 'KeyZ' && (e.ctrlKey || e.metaKey) && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('cancel-btn').click();
+            }
+            if (e.code === 'KeyY' && (e.ctrlKey || e.metaKey) && e.type === 'keydown') {
+                document.getElementById('contentFrame').contentWindow.document.getElementById('decancel-btn').click();
+            }
+        }
+
         function loadPage(pageUrl) {
             var iframe = document.getElementById('contentFrame');
             iframe.src = pageUrl;
