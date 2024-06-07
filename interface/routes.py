@@ -1,5 +1,5 @@
 from interface import app
-from functions import functions, db  
+from functions import functions, db, image_similarity
 from flask import render_template, send_file, request, jsonify, make_response, send_file
 from werkzeug.utils import secure_filename
 import zipfile
@@ -233,3 +233,12 @@ def redo_last_action():
         return jsonify(success=True), 200
     except Exception as e:
         return jsonify(success=False, error=str(e)), 500
+
+# @app.route('/get_similarity_images')
+# def get_similarity_images():
+#     user_code = db.get_user_code(request)
+#     try:
+#         groups = image_similarity.groups_of_similar_images(user_code)
+#         return groups
+#     except Exception as e:
+#         return jsonify(success=False, error=str(e)), 500

@@ -1,28 +1,33 @@
 import os
 import imgcompare
 
-def __init__(self, directory, similarity_threshold=10.0):
+def groups_of_similar_images(user_code, similarity_threshold=17.0):
+    directory = os.path.join('uploads', user_code)
     files = [f for f in os.listdir(directory) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))]
     n = len(files)
     groups = [[files[0]]]
 
-    for i in range(n-1):
+    for file in files[1:]:
         added = False
         for group in groups:
-            diff_percent = imgcompare.image_diff_percent(os.path.join(directory, files[i+1]), os.path.join(directory, group[0]))
-            print(diff_percent)
-            print(files[i+1], group[0])
+            diff_percent = imgcompare.image_diff_percent(os.path.join(directory, file), os.path.join(directory, group[-1]))
+
+            print(diff_percent, file, group[-1])
             if diff_percent <= similarity_threshold:
-                group.append(files[i+1])
+                group.append(file)
                 added = True
                 break
         if not added:
-            groups.append([files[i+1]])
+            groups.append([file])
+    
+    return groups
+    # for index, group in enumerate(groups):
+    #     print(f"Группа {index + 1}:")
+    #     for image in group:
+    #         print(image)
+    
 
-    print(groups)
-
-
-# compare_all_images('uploads\--')
+# __init__(os.path.join('uploads', 'd33be525-da6b-4842-aa52-a95b828dfa3d'))
 
 
 
